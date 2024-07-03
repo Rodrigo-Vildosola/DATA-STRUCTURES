@@ -17,7 +17,7 @@ function usage() {
     echo "  run           - Build and run the project (default array)"
     echo "  recreate      - Remove the build directory and rebuild"
     echo "  Debug|Release|Dist - Optional: specify build type (default is Release)"
-    echo "  array|linked_list - Optional: specify program to run (default is array)"
+    echo "  Array|LinkedList - Optional: specify program to run (default is array)"
 }
 
 # Check if the build type is allowed
