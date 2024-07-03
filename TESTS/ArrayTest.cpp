@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <Structs.h>
+#include <iostream>
 
 TEST(ArrayTest, AppendAndGetSize) {
     STRUCTS::Array array;
@@ -26,6 +27,7 @@ TEST(ArrayTest, Update) {
     array.append(2);
     array.update(1, 3);
     EXPECT_EQ(array.get(1), 3);
+    std::cout << "hola" << std::endl;
 }
 
 TEST(ArrayTest, Remove) {

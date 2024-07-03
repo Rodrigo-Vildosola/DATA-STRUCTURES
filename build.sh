@@ -105,6 +105,22 @@ case $1 in
             exit 1
         fi
         ;;
+    test)
+        echo "Creating build directory if it does not exist..."
+        mkdir -p $BUILD_DIR/$BUILD_TYPE
+        cd $BUILD_DIR/$BUILD_TYPE || exit
+        echo "Running cmake..."
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE ../..
+        echo "Building the project..."
+        if ninja; then
+            echo "Build of tests complete."
+        else
+            echo "Build failed. Not running tests."
+            exit 1
+        fi
+        echo "Running tests..."
+        ctest --output-on-failure
+        ;;
     *)
         usage
         exit 1
