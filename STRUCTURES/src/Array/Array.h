@@ -8,8 +8,10 @@ namespace STRUCTS {
 
     class Array {
     public:
+        Array();
         Array(int capacity);
         ~Array();
+
 
         void append(int value);
         void insert(int index, int value);
@@ -20,10 +22,10 @@ namespace STRUCTS {
         bool search(int value) const;
 
 
-        int getSize() { size; }
-        int getCapacity() { capacity; }
+        int getSize() { return size; }
+        int getCapacity() { return capacity; }
 
-        bool isEmpty();
+        bool isEmpty() const;
     private:
 
         void resize(int new_capacity);

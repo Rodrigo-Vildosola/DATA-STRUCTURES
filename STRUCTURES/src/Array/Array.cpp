@@ -2,9 +2,14 @@
 #include "Array/Array.h"
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 
 
 namespace STRUCTS {
+
+    Array::Array() : size(0), capacity(1) {
+        data = std::make_unique<int[]> (capacity);
+    }
 
     Array::Array(int capacity) : size(0), capacity(capacity) {
         data = std::make_unique<int[]> (capacity);
@@ -15,6 +20,7 @@ namespace STRUCTS {
     }
 
     void Array::resize(int new_capacity) {
+        std::cout << "Resizing array from: " << capacity << " to: " << new_capacity << std::endl;
         std::unique_ptr<int[]> new_data = std::make_unique<int[]>(new_capacity);
         std::copy(&data[0], &data[size], &new_data[0]);
         data = std::move(new_data);
@@ -64,12 +70,28 @@ namespace STRUCTS {
             data[i] = data[i + 1];
         }
         --size;
+        if (size <= capacity / 4 && capacity > 10) {
+            resize(capacity / 2);
+        }
     }
 
     void Array::traverse(const std::function<void(int)>& func) const {
         for (int i = 0; i < size; ++i) {
             func(data[i]);
         }
+    }
+
+    bool Array::search(int value) const {
+        for (int i = 0; i < size; ++i) {
+            if (data[i] == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool Array::isEmpty() const {
+        return size == 0;
     }
 
 }

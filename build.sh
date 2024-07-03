@@ -11,13 +11,13 @@ ALLOWED_BUILD_TYPES=("Debug" "Release" "Dist")
 
 # Function to display usage
 function usage() {
-    echo "Usage: $0 [clean|build|run|recreate] [Debug|Release|Dist] [demo_array|demo_linked_list]"
+    echo "Usage: $0 [clean|build|run|recreate] [Debug|Release|Dist] [array|linked_list]"
     echo "  clean         - Remove the build directory"
     echo "  build         - Create the build directory and compile the project"
-    echo "  run           - Build and run the project (default main_program)"
+    echo "  run           - Build and run the project (default array)"
     echo "  recreate      - Remove the build directory and rebuild"
     echo "  Debug|Release|Dist - Optional: specify build type (default is Release)"
-    echo "  array|linked_list - Optional: specify program to run (default is main_program)"
+    echo "  array|linked_list - Optional: specify program to run (default is array)"
 }
 
 # Check if the build type is allowed
@@ -66,8 +66,12 @@ case $1 in
         echo "Running cmake..."
         cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE ../..
         echo "Building the project..."
-        ninja
-        echo "Build complete."
+        if ninja; then
+            echo "Build complete."
+        else
+            echo "Build failed."
+            exit 1
+        fi
         ;;
     run)
         echo "Creating build directory if it does not exist..."
@@ -76,9 +80,14 @@ case $1 in
         echo "Running cmake..."
         cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE ../..
         echo "Building the project..."
-        ninja
-        echo "Running the project..."
-        ./bin/$PROGRAM
+        if ninja; then
+            echo "Build complete. Running the project..."
+            echo ""
+            ./bin/$PROGRAM
+        else
+            echo "Build failed. Not running the project."
+            exit 1
+        fi
         ;;
     recreate)
         echo "Removing build directory..."
@@ -89,8 +98,12 @@ case $1 in
         echo "Running cmake..."
         cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE ../..
         echo "Building the project..."
-        ninja
-        echo "Rebuild complete."
+        if ninja; then
+            echo "Rebuild complete."
+        else
+            echo "Build failed."
+            exit 1
+        fi
         ;;
     *)
         usage
