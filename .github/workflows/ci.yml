@@ -16,22 +16,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up CMake
-      uses: lukka/get-cmake@v3
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build
 
-    - name: Install Ninja
-      run: sudo apt-get install ninja-build
-
-    - name: Install GoogleTest dependencies
-      run: sudo apt-get install libgtest-dev
-
-    - name: Generate build files
-      run: cmake -S . -B build -G Ninja
-
-    - name: Build project
-      run: cmake --build build
+    - name: Run build script
+      run: |
+        chmod +x build.sh
+        ./build.sh build Debug
 
     - name: Run tests
       run: |
-        cd build
+        cd build/Debug
         ctest --output-on-failure
