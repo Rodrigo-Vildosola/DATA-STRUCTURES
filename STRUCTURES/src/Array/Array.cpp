@@ -2,7 +2,6 @@
 #include "Array/Array.h"
 #include <memory>
 #include <stdexcept>
-#include <iostream>
 
 
 namespace STRUCTS {
@@ -20,7 +19,6 @@ namespace STRUCTS {
     }
 
     void Array::resize(int new_capacity) {
-        std::cout << "Resizing array from: " << capacity << " to: " << new_capacity << std::endl;
         std::unique_ptr<int[]> new_data = std::make_unique<int[]>(new_capacity);
         std::copy(&data[0], &data[size], &new_data[0]);
         data = std::move(new_data);

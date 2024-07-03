@@ -16,7 +16,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
-# Set different compiler flags for different build types
+# Add different compiler flags for different build types
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wno-unused-parameter")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -Wall -Wextra -Wno-unused-parameter")
 set(CMAKE_CXX_FLAGS_DIST "-O3 -DNDEBUG -Wall -Wextra -Wno-unused-parameter")
@@ -34,11 +34,11 @@ endif()
 add_subdirectory(STRUCTURES)
 add_subdirectory(SANDBOX)
 
+# Add the tests directory
+add_subdirectory(TESTS)
 
-# Apply optimization flags to external libraries for Release and Dist builds
-if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "Dist")
-    # set_target_properties(spdlog PROPERTIES CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE}")
-endif()
+# Add Google Test
+add_subdirectory(external/googletest)
 
 # Add optimization flags for GCC and Clang
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -52,4 +52,3 @@ endif()
 
 # Print build type
 message("Build type: ${CMAKE_BUILD_TYPE}")
-message("Assets directories: ${ASSETS_DIR}")
