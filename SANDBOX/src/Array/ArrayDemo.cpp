@@ -1,4 +1,5 @@
 #include <iostream>
+#include <climits>
 
 #include <Structs.h>
 
@@ -45,7 +46,7 @@ int main() {
 
     // Find min and max
     int min = INT_MAX, max = INT_MIN;
-    array.traverse([&min, &max](int value) { find_min_max(value, min, max); });
+    array.traverse([&](int value) { find_min_max(value, min, max); });
     std::cout << "Minimum element: " << min << ", Maximum element: " << max << std::endl;
 
     // Increment each element
