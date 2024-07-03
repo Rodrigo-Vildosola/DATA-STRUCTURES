@@ -33,25 +33,11 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Dist")
     add_compile_definitions(ST_DIST)
 endif()
 
-# Add the STRUCTURES and SANDBOX directories
+# Add the external directories
+add_subdirectory(external/googletest)
 add_subdirectory(STRUCTURES)
 add_subdirectory(SANDBOX)
-
-# Add the tests directory
 add_subdirectory(TESTS)
-
-# Add Google Test
-add_subdirectory(external/googletest)
-
-# Add optimization flags for GCC and Clang
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-variable)
-endif()
-
-# Add optimization flags for MSVC
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    add_compile_options(/W4 /wd4100 /wd4201 /wd4505)
-endif()
 
 # Print build type
 message("Build type: ${CMAKE_BUILD_TYPE}")
