@@ -1,4 +1,5 @@
 #include "BinaryTree/BinaryTree.h"
+#include <climits>
 
 namespace STRUCTS {
 
