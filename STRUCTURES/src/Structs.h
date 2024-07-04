@@ -8,3 +8,7 @@
 
 #include "Queue/ArrayQueue.h"
 #include "Queue/LinkedListQueue.h"
+
+#include "Hash/HashTable.h"
+
+#include "BinaryTree/BinaryTree.h"
