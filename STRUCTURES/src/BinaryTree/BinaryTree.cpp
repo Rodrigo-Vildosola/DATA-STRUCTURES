@@ -162,11 +162,11 @@ namespace STRUCTS {
         std::cout << node->data << " ";
     }
 
-    void BinaryTree::traverse(const std::function<void(int)>& func) const {
+    void BinaryTree::traverse(const std::function<void(int&)>& func) {
         traverseRec(root.get(), func);
     }
 
-    void BinaryTree::traverseRec(const TreeNode* node, const std::function<void(int)>& func) const {
+    void BinaryTree::traverseRec(TreeNode* node, const std::function<void(int&)>& func) {
         if (node == nullptr) {
             return;
         }

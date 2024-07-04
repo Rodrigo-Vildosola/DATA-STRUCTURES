@@ -47,7 +47,7 @@ void testBinaryTree() {
 
     // Traverse with a custom function
     std::cout << "Traverse with a custom function (multiply by 2): ";
-    bt.traverse([](int value) { std::cout << value * 2 << " "; });
+    bt.traverse([](int& value) { value *= 2; });
     std::cout << std::endl;
     bt.inorder();
 

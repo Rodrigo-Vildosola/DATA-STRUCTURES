@@ -34,7 +34,7 @@ namespace STRUCTS {
         void preorder() const;
         void postorder() const;
 
-        void traverse(const std::function<void(int)>& func) const;
+        void traverse(const std::function<void(int&)>& func);
 
     private:
         std::unique_ptr<TreeNode> root;
@@ -54,7 +54,7 @@ namespace STRUCTS {
         void preorderRec(const TreeNode* node) const;
         void postorderRec(const TreeNode* node) const;
 
-        void traverseRec(const TreeNode* node, const std::function<void(int)>& func) const;
+        void traverseRec(TreeNode* node, const std::function<void(int&)>& func);
     };
 
 }
