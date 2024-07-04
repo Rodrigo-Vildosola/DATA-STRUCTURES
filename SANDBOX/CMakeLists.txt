@@ -3,8 +3,12 @@ project(Sandbox)
 
 include_directories(${CMAKE_SOURCE_DIR}/STRUCTURES/src)
 
-add_executable(ArrayDemo src/Array/ArrayDemo.cpp)
-target_link_libraries(ArrayDemo structures)
+# Automatically find all .cpp files in the src directory
+file(GLOB_RECURSE SANDBOX_SOURCES "src/**/*.cpp")
 
-add_executable(LinkedListDemo src/LinkedList/LinkedListDemo.cpp)
-target_link_libraries(LinkedListDemo structures)
+# Loop through each source file and create an executable
+foreach(SOURCE_FILE ${SANDBOX_SOURCES})
+    get_filename_component(EXECUTABLE_NAME ${SOURCE_FILE} NAME_WE)
+    add_executable(${EXECUTABLE_NAME} ${SOURCE_FILE})
+    target_link_libraries(${EXECUTABLE_NAME} structures)
+endforeach()

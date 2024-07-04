@@ -3,12 +3,13 @@ project(StructsForgeTests)
 
 include_directories(${CMAKE_SOURCE_DIR}/STRUCTURES/src)
 
-# Add test executable for Array
-add_executable(ArrayTest ArrayTest.cpp)
-target_link_libraries(ArrayTest gtest gtest_main structures)
-add_test(NAME ArrayTest COMMAND ArrayTest)
+# Automatically find all test .cpp files
+file(GLOB TEST_SOURCES "*.cpp")
 
-# Add test executable for LinkedList
-add_executable(LinkedListTest LinkedListTest.cpp)
-target_link_libraries(LinkedListTest gtest gtest_main structures)
-add_test(NAME LinkedListTest COMMAND LinkedListTest)
+# Create a test executable for each test source file
+foreach(TEST_SRC ${TEST_SOURCES})
+    get_filename_component(TEST_NAME ${TEST_SRC} NAME_WE)
+    add_executable(${TEST_NAME} ${TEST_SRC})
+    target_link_libraries(${TEST_NAME} gtest gtest_main structures)
+    add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+endforeach()

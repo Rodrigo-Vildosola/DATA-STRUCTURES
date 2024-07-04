@@ -4,12 +4,11 @@ project(StructuresLib)
 # Include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# Add source files for the data structures
-add_library(structures
-    src/Array/Array.cpp
-    src/LinkedList/LinkedList.cpp
-    # Add more data structure source files here
-)
+# Automatically find all .cpp files in the src directory and its subdirectories
+file(GLOB_RECURSE STRUCTURES_SRC "src/*.cpp")
 
-# Link Google Test libraries for testing purposes
-# target_link_libraries(structures gtest _main)
+# Add source files for the data structures
+add_library(structures ${STRUCTURES_SRC})
+
+# Link Google Test libraries for testing purposes (if needed)
+# target_link_libraries(structures gtest gtest_main)
