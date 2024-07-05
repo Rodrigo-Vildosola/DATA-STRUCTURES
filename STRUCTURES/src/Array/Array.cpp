@@ -6,7 +6,7 @@ namespace STRUCTS {
         data = std::make_unique<int[]>(static_cast<size_t>(capacity));
     }
 
-    Array::Array(int capacity) : size(0), capacity(capacity) {
+    Array::Array(int initial_capacity) : size(0), capacity(initial_capacity) {
         data = std::make_unique<int[]>(static_cast<size_t>(capacity));
     }
 

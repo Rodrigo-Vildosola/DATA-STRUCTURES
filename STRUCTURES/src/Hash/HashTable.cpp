@@ -3,7 +3,8 @@
 
 namespace STRUCTS {
 
-    HashTable::HashTable(int capacity) : capacity(capacity), size(0), table(std::make_unique<std::unique_ptr<HashNode>[]>(static_cast<size_t>(capacity))) {
+    HashTable::HashTable(int initial_capacity) : capacity(initial_capacity), size(0) {
+        table = std::make_unique<std::unique_ptr<HashNode>[]>(static_cast<size_t>(capacity));
         for (size_t i = 0; i < static_cast<size_t>(capacity); ++i) {
             table[i] = nullptr;
         }
