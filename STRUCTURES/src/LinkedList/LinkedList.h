@@ -10,7 +10,7 @@ namespace STRUCTS {
         int data;
         std::unique_ptr<Node> next;
 
-        Node(int data) : data(data), next(nullptr) {}
+        Node(int initial_data) : data(initial_data), next(nullptr) {}
     };
 
     class LinkedList {

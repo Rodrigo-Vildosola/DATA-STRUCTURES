@@ -2,7 +2,7 @@
 
 namespace STRUCTS {
 
-    ArrayStack::ArrayStack() : size(0), capacity(10) {
+    ArrayStack::ArrayStack(int initial_capacity) : size(0), capacity(initial_capacity) {
         data = std::make_unique<int[]>(static_cast<size_t>(capacity));
     }
 

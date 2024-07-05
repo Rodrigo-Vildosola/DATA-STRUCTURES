@@ -2,8 +2,7 @@
 
 namespace STRUCTS {
 
-    ArrayQueue::ArrayQueue(int capacity)
-        : size(0), capacity(capacity), frontIndex(0), rearIndex(-1) {
+    ArrayQueue::ArrayQueue(int initial_capacity) : size(0), capacity(initial_capacity), frontIndex(0), rearIndex(-1) {
         data = std::make_unique<int[]>(static_cast<size_t>(capacity));
     }
 

@@ -6,7 +6,7 @@ namespace STRUCTS {
 
     class ArrayQueue {
     public:
-        ArrayQueue(int capacity = 10);
+        ArrayQueue(int initial_capacity = 10);
         ~ArrayQueue();
 
         ArrayQueue(const ArrayQueue& other);

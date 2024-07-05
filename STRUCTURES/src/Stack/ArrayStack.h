@@ -6,7 +6,7 @@ namespace STRUCTS {
 
     class ArrayStack {
     public:
-        ArrayStack();
+        ArrayStack(int initial_capacity = 10);
         ~ArrayStack();
 
         ArrayStack(const ArrayStack& other);

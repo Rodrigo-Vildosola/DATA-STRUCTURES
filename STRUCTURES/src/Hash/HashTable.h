@@ -17,7 +17,7 @@ namespace STRUCTS {
 
     class HashTable {
     public:
-        HashTable(int capacity = 10);
+        HashTable(int initial_capacity = 10);
         ~HashTable();
 
         void insert(int key, int value);

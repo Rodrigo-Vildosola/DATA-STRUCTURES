@@ -10,7 +10,7 @@ namespace STRUCTS {
     class Array {
     public:
         Array();
-        Array(int capacity);
+        Array(int initial_capacity);
         ~Array();
 
         Array(const Array& other); 

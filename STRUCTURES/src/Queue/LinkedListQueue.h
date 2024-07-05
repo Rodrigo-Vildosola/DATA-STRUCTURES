@@ -10,7 +10,7 @@ namespace STRUCTS {
         int data;
         std::unique_ptr<QueueNode> next;
 
-        QueueNode(int data) : data(data), next(nullptr) {}
+        QueueNode(int initial_data) : data(initial_data), next(nullptr) {}
     };
 
     class LinkedListQueue {
