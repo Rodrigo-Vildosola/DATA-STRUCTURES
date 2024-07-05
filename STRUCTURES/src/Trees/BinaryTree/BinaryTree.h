@@ -22,10 +22,11 @@ namespace STRUCTS {
         TreeNode(const T& value) : data(value), left(nullptr), right(nullptr) {}
     };
 
-    template<typename T>
+    template<typename T, typename Compare = std::less<T>>
     class BinaryTree {
     public:
         BinaryTree();
+        explicit BinaryTree(Compare comp);
         ~BinaryTree();
 
         void insert(const T& value);
@@ -42,6 +43,7 @@ namespace STRUCTS {
         std::unique_ptr<TreeNode<T>> root;
         int tree_size;
         int tree_height;
+        Compare compare;
 
         std::unique_ptr<TreeNode<T>> insertRec(std::unique_ptr<TreeNode<T>> node, const T& value);
         std::unique_ptr<TreeNode<T>> removeRec(std::unique_ptr<TreeNode<T>> node, const T& value);

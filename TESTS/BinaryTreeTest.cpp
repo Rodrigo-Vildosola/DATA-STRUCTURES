@@ -145,8 +145,8 @@ TEST(BinaryTreeTest, MinMaxAfterOperations) {
 TEST(BinaryTreeTest, StringBinaryTree) {
     STRUCTS::BinaryTree<std::string> bt;
 
-    bt.insert("apple");
     bt.insert("banana");
+    bt.insert("apple");
     bt.insert("cherry");
 
     EXPECT_TRUE(bt.search("apple"));
@@ -164,20 +164,20 @@ TEST(BinaryTreeTest, StringBinaryTree) {
     testing::internal::CaptureStdout();
     bt.traverse([](const std::string& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Preorder);
     output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "apple banana cherry ");
+    EXPECT_EQ(output, "banana apple cherry ");
 
     // Test postorder traversal
     testing::internal::CaptureStdout();
     bt.traverse([](const std::string& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Postorder);
     output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "cherry banana apple ");
+    EXPECT_EQ(output, "apple cherry banana ");
 }
 
 TEST(BinaryTreeTest, MapStringBinaryTree) {
     STRUCTS::BinaryTree<std::string> bt;
 
-    bt.insert("apple");
     bt.insert("banana");
+    bt.insert("apple");
     bt.insert("cherry");
 
     // Append " fruit" to each string
