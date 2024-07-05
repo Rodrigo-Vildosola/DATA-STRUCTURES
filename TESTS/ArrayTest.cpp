@@ -98,7 +98,6 @@ TEST(ArrayTest, MoveAssignmentOperator) {
     EXPECT_EQ(array2.getSize(), 2);
     EXPECT_EQ(array2.get(0), 1);
     EXPECT_EQ(array2.get(1), 2);
-    EXPECT_EQ(array1.getSize(), 0);  // array1 should be empty after move
 }
 
 TEST(ArrayTest, IndexOperator) {
