@@ -12,3 +12,5 @@
 #include "Hash/HashTable.h"
 
 #include "Trees/BinaryTree/BinaryTree.h"
+#include "Trees/GeneralTree/GeneralTree.h"
+

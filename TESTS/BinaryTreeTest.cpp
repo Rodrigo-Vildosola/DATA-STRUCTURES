@@ -182,7 +182,7 @@ TEST(BinaryTreeTest, MapStringBinaryTree) {
     bt.insert("cherry");
 
     // Append " fruit" to each string
-    bt.map([](std::string value) { return value + " fruit"; });
+    bt.map([](const std::string& value) { return value + " fruit"; });
 
     // Test inorder traversal after mapping
     testing::internal::CaptureStdout();
