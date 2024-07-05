@@ -2,40 +2,47 @@
 
 namespace STRUCTS {
 
-    Array::Array() : size(0), capacity(1) {
-        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
+    template <typename T>
+    Array<T>::Array() : size(0), capacity(1) {
+        data = std::make_unique<T[]>(static_cast<size_t>(capacity));
     }
 
-    Array::Array(int initial_capacity) : size(0), capacity(initial_capacity) {
-        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
+    template <typename T>
+    Array<T>::Array(int initial_capacity) : size(0), capacity(initial_capacity) {
+        data = std::make_unique<T[]>(static_cast<size_t>(capacity));
     }
 
-    Array::~Array() {
+    template <typename T>
+    Array<T>::~Array() {
         // unique_ptr automatically handles memory deallocation
     }
 
-    Array::Array(const Array& other) : size(other.size), capacity(other.capacity) {
-        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
+    template <typename T>
+    Array<T>::Array(const Array& other) : size(other.size), capacity(other.capacity) {
+        data = std::make_unique<T[]>(static_cast<size_t>(capacity));
         std::copy(&other.data[0], &other.data[static_cast<size_t>(size)], &data[0]);
     }
 
-    Array::Array(Array&& other) noexcept : size(other.size), capacity(other.capacity), data(std::move(other.data)) {
+    template <typename T>
+    Array<T>::Array(Array&& other) noexcept : size(other.size), capacity(other.capacity), data(std::move(other.data)) {
         other.size = 0;
         other.capacity = 0;
     }
 
-    Array& Array::operator=(const Array& other) {
+    template <typename T>
+    Array<T>& Array<T>::operator=(const Array& other) {
         if (this == &other) {
             return *this;
         }
         size = other.size;
         capacity = other.capacity;
-        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
+        data = std::make_unique<T[]>(static_cast<size_t>(capacity));
         std::copy(&other.data[0], &other.data[static_cast<size_t>(size)], &data[0]);
         return *this;
     }
 
-    Array& Array::operator=(Array&& other) noexcept {
+    template <typename T>
+    Array<T>& Array<T>::operator=(Array&& other) noexcept {
         if (this == &other) {
             return *this;
         }
@@ -47,21 +54,24 @@ namespace STRUCTS {
         return *this;
     }
 
-    int& Array::operator[](int index) {
+    template <typename T>
+    T& Array<T>::operator[](int index) {
         if (index < 0 || index >= size) {
             throw std::out_of_range("Index out of bounds");
         }
         return data[static_cast<size_t>(index)];
     }
 
-    const int& Array::operator[](int index) const {
+    template <typename T>
+    const T& Array<T>::operator[](int index) const {
         if (index < 0 || index >= size) {
             throw std::out_of_range("Index out of bounds");
         }
         return data[static_cast<size_t>(index)];
     }
 
-    bool Array::operator==(const Array& other) const {
+    template <typename T>
+    bool Array<T>::operator==(const Array& other) const {
         if (size != other.size) {
             return false;
         }
@@ -73,25 +83,29 @@ namespace STRUCTS {
         return true;
     }
 
-    bool Array::operator!=(const Array& other) const {
+    template <typename T>
+    bool Array<T>::operator!=(const Array& other) const {
         return !(*this == other);
     }
 
-    void Array::resize(int new_capacity) {
-        std::unique_ptr<int[]> new_data = std::make_unique<int[]>(static_cast<size_t>(new_capacity));
+    template <typename T>
+    void Array<T>::resize(int new_capacity) {
+        std::unique_ptr<T[]> new_data = std::make_unique<T[]>(static_cast<size_t>(new_capacity));
         std::copy(&data[0], &data[static_cast<size_t>(size)], &new_data[0]);
         data = std::move(new_data);
         capacity = new_capacity;
     }
 
-    void Array::append(int value) {
+    template <typename T>
+    void Array<T>::append(const T& value) {
         if (size >= capacity) {
             resize(capacity * 2);
         }
         data[static_cast<size_t>(size++)] = value;
     }
 
-    void Array::insert(int index, int value) {
+    template <typename T>
+    void Array<T>::insert(int index, const T& value) {
         if (index < 0 || index > size) {
             throw std::out_of_range("Insert Error: Index out of bounds.");
         }
@@ -105,21 +119,24 @@ namespace STRUCTS {
         ++size;
     }
 
-    int Array::get(int index) const {
+    template <typename T>
+    T Array<T>::get(int index) const {
         if (index < 0 || index >= size) {
             throw std::out_of_range("Get Error: Index out of bounds.");
         }
         return data[static_cast<size_t>(index)];
     }
 
-    void Array::update(int index, int value) {
+    template <typename T>
+    void Array<T>::update(int index, const T& value) {
         if (index < 0 || index >= size) {
             throw std::out_of_range("Update Error: Index out of bounds.");
         }
         data[static_cast<size_t>(index)] = value;
     }
 
-    void Array::remove(int index) {
+    template <typename T>
+    void Array<T>::remove(int index) {
         if (index < 0 || index >= size) {
             throw std::out_of_range("Remove Error: Index out of bounds.");
         }
@@ -132,13 +149,23 @@ namespace STRUCTS {
         }
     }
 
-    void Array::traverse(const std::function<void(int)>& func) const {
+    template <typename T>
+    void Array<T>::traverse(const std::function<void(const T&)>& func) const {
         for (int i = 0; i < size; ++i) {
             func(data[static_cast<size_t>(i)]);
         }
     }
 
-    bool Array::search(int value) const {
+    template <typename T>
+    void Array<T>::map(const std::function<T(T)>& func) {
+        for (int i = 0; i < size; ++i) {
+            data[static_cast<size_t>(i)] = func(data[static_cast<size_t>(i)]);
+        }
+    }
+
+
+    template <typename T>
+    bool Array<T>::search(const T& value) const {
         for (int i = 0; i < size; ++i) {
             if (data[static_cast<size_t>(i)] == value) {
                 return true;
@@ -147,7 +174,8 @@ namespace STRUCTS {
         return false;
     }
 
-    bool Array::isEmpty() const {
+    template <typename T>
+    bool Array<T>::isEmpty() const {
         return size == 0;
     }
 

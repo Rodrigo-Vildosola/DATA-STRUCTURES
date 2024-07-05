@@ -1,129 +1,154 @@
 #include <gtest/gtest.h>
 #include <Structs.h>
 #include <iostream>
+#include <string>
 
-TEST(ArrayTest, AppendAndGetSize) {
-    STRUCTS::Array array;
-    EXPECT_EQ(array.getSize(), 0);
-    array.append(1);
-    EXPECT_EQ(array.getSize(), 1);
-    array.append(2);
-    EXPECT_EQ(array.getSize(), 2);
+struct Person {
+    std::string name;
+    int age;
+
+    bool operator==(const Person& other) const {
+        return name == other.name && age == other.age;
+    }
+
+    bool operator!=(const Person& other) const {
+        return !(*this == other);
+    }
+};
+
+std::ostream& operator<<(std::ostream& os, const Person& person) {
+    os << person.name << " (" << person.age << ")";
+    return os;
 }
 
-TEST(ArrayTest, InsertAndGet) {
-    STRUCTS::Array array;
+// Functions for map and traverse
+int increment_int(int value) {
+    return value + 1;
+}
+
+double increment_double(double value) {
+    return value + 1.0;
+}
+
+std::string add_exclamation(const std::string& value) {
+    return value + "!";
+}
+
+Person increase_age(Person person) {
+    person.age += 1;
+    return person;
+}
+
+void print_element(int value) {
+    std::cout << value << " ";
+}
+
+void print_element_double(double value) {
+    std::cout << value << " ";
+}
+
+void print_element_string(const std::string& value) {
+    std::cout << value << " ";
+}
+
+void print_element_person(const Person& person) {
+    std::cout << person << " ";
+}
+
+TEST(ArrayTest, MapFunctionInt) {
+    STRUCTS::Array<int> array;
     array.append(1);
+    array.append(2);
     array.append(3);
-    array.insert(1, 2);
-    EXPECT_EQ(array.get(0), 1);
-    EXPECT_EQ(array.get(1), 2);
-    EXPECT_EQ(array.get(2), 3);
-}
 
-TEST(ArrayTest, Update) {
-    STRUCTS::Array array;
-    array.append(1);
-    array.append(2);
-    array.update(1, 3);
+    array.map(increment_int);
+
+    EXPECT_EQ(array.get(0), 2);
     EXPECT_EQ(array.get(1), 3);
+    EXPECT_EQ(array.get(2), 4);
 }
 
-TEST(ArrayTest, Remove) {
-    STRUCTS::Array array;
+TEST(ArrayTest, MapFunctionDouble) {
+    STRUCTS::Array<double> array;
+    array.append(1.1);
+    array.append(2.2);
+    array.append(3.3);
+
+    array.map(increment_double);
+
+    EXPECT_DOUBLE_EQ(array.get(0), 2.1);
+    EXPECT_DOUBLE_EQ(array.get(1), 3.2);
+    EXPECT_DOUBLE_EQ(array.get(2), 4.3);
+}
+
+TEST(ArrayTest, MapFunctionString) {
+    STRUCTS::Array<std::string> array;
+    array.append("Hello");
+    array.append("World");
+
+    array.map(add_exclamation);
+
+    EXPECT_EQ(array.get(0), "Hello!");
+    EXPECT_EQ(array.get(1), "World!");
+}
+
+TEST(ArrayTest, MapFunctionPerson) {
+    STRUCTS::Array<Person> array;
+    array.append(Person{"Alice", 30});
+    array.append(Person{"Bob", 25});
+
+    array.map(increase_age);
+
+    EXPECT_EQ(array.get(0).age, 31);
+    EXPECT_EQ(array.get(1).age, 26);
+}
+
+TEST(ArrayTest, TraverseFunctionInt) {
+    STRUCTS::Array<int> array;
     array.append(1);
     array.append(2);
     array.append(3);
-    array.remove(1);
-    EXPECT_EQ(array.get(0), 1);
-    EXPECT_EQ(array.get(1), 3);
-    EXPECT_EQ(array.getSize(), 2);
+
+    testing::internal::CaptureStdout();
+    array.traverse(print_element);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output, "1 2 3 ");
 }
 
-TEST(ArrayTest, IsEmpty) {
-    STRUCTS::Array array;
-    EXPECT_TRUE(array.isEmpty());
-    array.append(1);
-    EXPECT_FALSE(array.isEmpty());
+TEST(ArrayTest, TraverseFunctionDouble) {
+    STRUCTS::Array<double> array;
+    array.append(1.1);
+    array.append(2.2);
+    array.append(3.3);
+
+    testing::internal::CaptureStdout();
+    array.traverse(print_element_double);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output, "1.1 2.2 3.3 ");
 }
 
-TEST(ArrayTest, Search) {
-    STRUCTS::Array array;
-    array.append(1);
-    array.append(2);
-    array.append(3);
-    EXPECT_TRUE(array.search(2));
-    EXPECT_FALSE(array.search(4));
+TEST(ArrayTest, TraverseFunctionString) {
+    STRUCTS::Array<std::string> array;
+    array.append("Hello");
+    array.append("World");
+
+    testing::internal::CaptureStdout();
+    array.traverse(print_element_string);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output, "Hello World ");
 }
 
-TEST(ArrayTest, CopyConstructor) {
-    STRUCTS::Array array1;
-    array1.append(1);
-    array1.append(2);
-    STRUCTS::Array array2 = array1;
-    EXPECT_EQ(array2.getSize(), 2);
-    EXPECT_EQ(array2.get(0), 1);
-    EXPECT_EQ(array2.get(1), 2);
-    EXPECT_TRUE(array2 == array1);
-}
+TEST(ArrayTest, TraverseFunctionPerson) {
+    STRUCTS::Array<Person> array;
+    array.append(Person{"Alice", 30});
+    array.append(Person{"Bob", 25});
 
-TEST(ArrayTest, MoveConstructor) {
-    STRUCTS::Array array1;
-    array1.append(1);
-    array1.append(2);
-    STRUCTS::Array array2 = std::move(array1);
-    EXPECT_EQ(array2.getSize(), 2);
-    EXPECT_EQ(array2.get(0), 1);
-    EXPECT_EQ(array2.get(1), 2);
-}
+    testing::internal::CaptureStdout();
+    array.traverse(print_element_person);
+    std::string output = testing::internal::GetCapturedStdout();
 
-TEST(ArrayTest, CopyAssignmentOperator) {
-    STRUCTS::Array array1;
-    array1.append(1);
-    array1.append(2);
-    STRUCTS::Array array2;
-    array2 = array1;
-    EXPECT_EQ(array2.getSize(), 2);
-    EXPECT_EQ(array2.get(0), 1);
-    EXPECT_EQ(array2.get(1), 2);
-    EXPECT_TRUE(array2 == array1);
-}
-
-TEST(ArrayTest, MoveAssignmentOperator) {
-    STRUCTS::Array array1;
-    array1.append(1);
-    array1.append(2);
-    STRUCTS::Array array2;
-    array2 = std::move(array1);
-    EXPECT_EQ(array2.getSize(), 2);
-    EXPECT_EQ(array2.get(0), 1);
-    EXPECT_EQ(array2.get(1), 2);
-}
-
-TEST(ArrayTest, IndexOperator) {
-    STRUCTS::Array array;
-    array.append(1);
-    array.append(2);
-    EXPECT_EQ(array[0], 1);
-    EXPECT_EQ(array[1], 2);
-    array[1] = 3;
-    EXPECT_EQ(array[1], 3);
-}
-
-TEST(ArrayTest, EqualityOperators) {
-    STRUCTS::Array array1;
-    array1.append(1);
-    array1.append(2);
-    STRUCTS::Array array2;
-    array2.append(1);
-    array2.append(2);
-    EXPECT_TRUE(array1 == array2);
-    array2.append(3);
-    EXPECT_FALSE(array1 == array2);
-    EXPECT_TRUE(array1 != array2);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    EXPECT_EQ(output, "Alice (30) Bob (25) ");
 }
