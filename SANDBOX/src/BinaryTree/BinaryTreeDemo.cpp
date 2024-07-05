@@ -1,13 +1,23 @@
 // BinaryTreeDemo.cpp
 #include <iostream>
+#include <vector>
 #include <Structs.h>
 
 void printNode(const int& value) {
     std::cout << value << " ";
 }
 
+void printVectorNode(const std::vector<int>& value) {
+    std::cout << "{ ";
+    for (const auto& v : value) {
+        std::cout << v << " ";
+    }
+    std::cout << "} ";
+}
+
+
 void testBinaryTree() {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     // Insert values
     bt.insert(10);
@@ -36,10 +46,6 @@ void testBinaryTree() {
     std::cout << "Search 20: " << (bt.search(20) ? "Found" : "Not Found") << std::endl;
     std::cout << "Search 100: " << (bt.search(100) ? "Found" : "Not Found") << std::endl;
 
-    // Find min and max
-    std::cout << "Min value: " << bt.findMin() << std::endl;
-    std::cout << "Max value: " << bt.findMax() << std::endl;
-
     // Tree height
     std::cout << "Tree height: " << bt.height() << std::endl;
 
@@ -61,6 +67,18 @@ void testBinaryTree() {
 
     std::cout << "In-order traversal after multiplying by 2: ";
     bt.traverse(printNode, STRUCTS::TraversalType::Inorder);
+    std::cout << std::endl;
+
+    STRUCTS::BinaryTree<std::vector<int>> btVec;
+
+    // Insert vector values
+    btVec.insert({1, 2, 3});
+    btVec.insert({4, 5, 6});
+    btVec.insert({0});
+
+    // Print traversals
+    std::cout << "In-order traversal of vector tree: ";
+    btVec.traverse(printVectorNode, STRUCTS::TraversalType::Inorder);
     std::cout << std::endl;
 }
 

@@ -13,48 +13,46 @@ namespace STRUCTS {
         Postorder
     }; 
 
+    template<typename T>
     struct TreeNode {
-        int data;
+        T data;
         std::unique_ptr<TreeNode> left;
         std::unique_ptr<TreeNode> right;
 
-        TreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+        TreeNode(const T& value) : data(value), left(nullptr), right(nullptr) {}
     };
 
+    template<typename T>
     class BinaryTree {
     public:
         BinaryTree();
         ~BinaryTree();
 
-        void insert(int value);
-        void remove(int value);
-        bool search(int value) const;
+        void insert(const T& value);
+        void remove(const T& value);
+        bool search(const T& value) const;
 
-        int findMin() const;
-        int findMax() const;
         int height() const;
         int size() const { return tree_size; }
 
-        void traverse(const std::function<void(const int&)>& func, TraversalType type = TraversalType::Inorder) const;
-        void map(const std::function<int(int)>& func);
+        void traverse(const std::function<void(const T&)>& func, TraversalType type = TraversalType::Inorder) const;
+        void map(const std::function<T(T)>& func);
 
     private:
-        std::unique_ptr<TreeNode> root;
+        std::unique_ptr<TreeNode<T>> root;
         int tree_size;
         int tree_height;
-        int tree_min;
-        int tree_max;
 
-        std::unique_ptr<TreeNode> insertRec(std::unique_ptr<TreeNode> node, int value);
-        std::unique_ptr<TreeNode> removeRec(std::unique_ptr<TreeNode> node, int value);
-        bool searchRec(const TreeNode* node, int value) const;
-        TreeNode* findMinRec(TreeNode* node) const;
-        TreeNode* findMaxRec(TreeNode* node) const;
-        int heightRec(const TreeNode* node) const;
+        std::unique_ptr<TreeNode<T>> insertRec(std::unique_ptr<TreeNode<T>> node, const T& value);
+        std::unique_ptr<TreeNode<T>> removeRec(std::unique_ptr<TreeNode<T>> node, const T& value);
+        bool searchRec(const TreeNode<T>* node, const T& value) const;
+        int heightRec(const TreeNode<T>* node) const;
 
-        void traverseRec(TreeNode* node, const std::function<void(const int&)>& func, TraversalType type) const;
-        void mapRec(TreeNode* node, const std::function<int(int)>& func);
-
+        void traverseRec(TreeNode<T>* node, const std::function<void(const T&)>& func, TraversalType type) const;
+        void mapRec(TreeNode<T>* node, const std::function<T(T)>& func);
     };
 
 }
+
+// Include the implementation file for template definitions
+#include "Trees/BinaryTree/BinaryTree.tpp"

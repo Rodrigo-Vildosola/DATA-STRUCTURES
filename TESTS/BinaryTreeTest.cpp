@@ -3,7 +3,7 @@
 #include <sstream>
 
 TEST(BinaryTreeTest, InsertAndSearch) {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     bt.insert(10);
     bt.insert(20);
@@ -16,7 +16,7 @@ TEST(BinaryTreeTest, InsertAndSearch) {
 }
 
 TEST(BinaryTreeTest, Remove) {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     bt.insert(10);
     bt.insert(20);
@@ -28,19 +28,8 @@ TEST(BinaryTreeTest, Remove) {
     EXPECT_TRUE(bt.search(5));
 }
 
-TEST(BinaryTreeTest, FindMinMax) {
-    STRUCTS::BinaryTree bt;
-
-    bt.insert(10);
-    bt.insert(20);
-    bt.insert(5);
-
-    EXPECT_EQ(bt.findMin(), 5);
-    EXPECT_EQ(bt.findMax(), 20);
-}
-
 TEST(BinaryTreeTest, Height) {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     bt.insert(10);
     bt.insert(20);
@@ -52,7 +41,7 @@ TEST(BinaryTreeTest, Height) {
 }
 
 TEST(BinaryTreeTest, Traversal) {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     bt.insert(10);
     bt.insert(20);
@@ -78,7 +67,7 @@ TEST(BinaryTreeTest, Traversal) {
 }
 
 TEST(BinaryTreeTest, Map) {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     bt.insert(10);
     bt.insert(20);
@@ -99,7 +88,7 @@ TEST(BinaryTreeTest, Map) {
 }
 
 TEST(BinaryTreeTest, SizeAndHeightAfterOperations) {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     bt.insert(10);
     bt.insert(20);
@@ -118,7 +107,7 @@ TEST(BinaryTreeTest, SizeAndHeightAfterOperations) {
 }
 
 TEST(BinaryTreeTest, MinMaxAfterOperations) {
-    STRUCTS::BinaryTree bt;
+    STRUCTS::BinaryTree<int> bt;
 
     bt.insert(10);
     bt.insert(20);
@@ -126,12 +115,82 @@ TEST(BinaryTreeTest, MinMaxAfterOperations) {
     bt.insert(4);
     bt.insert(6);
 
-    EXPECT_EQ(bt.findMin(), 4);
-    EXPECT_EQ(bt.findMax(), 20);
+    int minValue = INT_MAX;
+    int maxValue = INT_MIN;
+
+    // Traverse to find min and max
+    bt.traverse([&minValue, &maxValue](const int& value) {
+        if (value < minValue) minValue = value;
+        if (value > maxValue) maxValue = value;
+    });
+
+    EXPECT_EQ(minValue, 4);
+    EXPECT_EQ(maxValue, 20);
 
     bt.remove(20);
     bt.remove(4);
 
-    EXPECT_EQ(bt.findMin(), 5);
-    EXPECT_EQ(bt.findMax(), 10);
+    minValue = INT_MAX;
+    maxValue = INT_MIN;
+
+    bt.traverse([&minValue, &maxValue](const int& value) {
+        if (value < minValue) minValue = value;
+        if (value > maxValue) maxValue = value;
+    });
+
+    EXPECT_EQ(minValue, 5);
+    EXPECT_EQ(maxValue, 10);
+}
+
+TEST(BinaryTreeTest, StringBinaryTree) {
+    STRUCTS::BinaryTree<std::string> bt;
+
+    bt.insert("apple");
+    bt.insert("banana");
+    bt.insert("cherry");
+
+    EXPECT_TRUE(bt.search("apple"));
+    EXPECT_TRUE(bt.search("banana"));
+    EXPECT_TRUE(bt.search("cherry"));
+    EXPECT_FALSE(bt.search("date"));
+
+    // Test inorder traversal
+    testing::internal::CaptureStdout();
+    bt.traverse([](const std::string& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Inorder);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "apple banana cherry ");
+
+    // Test preorder traversal
+    testing::internal::CaptureStdout();
+    bt.traverse([](const std::string& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Preorder);
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "apple banana cherry ");
+
+    // Test postorder traversal
+    testing::internal::CaptureStdout();
+    bt.traverse([](const std::string& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Postorder);
+    output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "cherry banana apple ");
+}
+
+TEST(BinaryTreeTest, MapStringBinaryTree) {
+    STRUCTS::BinaryTree<std::string> bt;
+
+    bt.insert("apple");
+    bt.insert("banana");
+    bt.insert("cherry");
+
+    // Append " fruit" to each string
+    bt.map([](std::string value) { return value + " fruit"; });
+
+    // Test inorder traversal after mapping
+    testing::internal::CaptureStdout();
+    bt.traverse([](const std::string& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Inorder);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "apple fruit banana fruit cherry fruit ");
+
+    EXPECT_TRUE(bt.search("apple fruit"));
+    EXPECT_TRUE(bt.search("banana fruit"));
+    EXPECT_TRUE(bt.search("cherry fruit"));
+    EXPECT_FALSE(bt.search("date"));
 }
