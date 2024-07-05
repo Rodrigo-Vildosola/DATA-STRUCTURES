@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 
 namespace STRUCTS {
 
@@ -17,6 +18,17 @@ namespace STRUCTS {
         LinkedListQueue();
         ~LinkedListQueue();
 
+        LinkedListQueue(const LinkedListQueue& other);
+        LinkedListQueue(LinkedListQueue&& other) noexcept;
+
+        LinkedListQueue& operator=(const LinkedListQueue& other);
+        LinkedListQueue& operator=(LinkedListQueue&& other) noexcept;
+
+        bool operator==(const LinkedListQueue& other) const;
+        bool operator!=(const LinkedListQueue& other) const;
+
+        friend std::ostream& operator<<(std::ostream& os, const LinkedListQueue& queue);
+
         void enqueue(int value);
         int dequeue();
         int front() const;
@@ -27,6 +39,9 @@ namespace STRUCTS {
         std::unique_ptr<QueueNode> head;
         QueueNode* tail;
         int size;
+
+        void copyFrom(const LinkedListQueue& other);
+        void moveFrom(LinkedListQueue&& other) noexcept;
     };
 
 }

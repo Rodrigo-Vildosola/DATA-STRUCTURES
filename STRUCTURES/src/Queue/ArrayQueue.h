@@ -1,5 +1,4 @@
-#pragma once
-
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
@@ -9,6 +8,18 @@ namespace STRUCTS {
     public:
         ArrayQueue(int capacity = 10);
         ~ArrayQueue();
+
+        ArrayQueue(const ArrayQueue& other);
+        ArrayQueue(ArrayQueue&& other) noexcept;
+
+        ArrayQueue& operator=(const ArrayQueue& other);
+        ArrayQueue& operator=(ArrayQueue&& other) noexcept;
+
+        bool operator==(const ArrayQueue& other) const;
+        bool operator!=(const ArrayQueue& other) const;
+
+        // Stream insertion operator
+        friend std::ostream& operator<<(std::ostream& os, const ArrayQueue& queue);
 
         void enqueue(int value);
         int dequeue();
@@ -20,11 +31,12 @@ namespace STRUCTS {
     private:
         void resize(int new_capacity);
 
-        std::unique_ptr<int[]> data;
-        int capacity;
         int size;
+        int capacity;
         int frontIndex;
         int rearIndex;
+        std::unique_ptr<int[]> data;
     };
 
+    // Implementations...
 }

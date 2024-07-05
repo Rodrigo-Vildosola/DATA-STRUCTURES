@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 
 namespace STRUCTS {
 
@@ -17,6 +18,17 @@ namespace STRUCTS {
         LinkedListStack();
         ~LinkedListStack();
 
+        LinkedListStack(const LinkedListStack& other);
+        LinkedListStack(LinkedListStack&& other) noexcept;
+
+        LinkedListStack& operator=(const LinkedListStack& other);
+        LinkedListStack& operator=(LinkedListStack&& other) noexcept;
+
+        bool operator==(const LinkedListStack& other) const;
+        bool operator!=(const LinkedListStack& other) const;
+
+        friend std::ostream& operator<<(std::ostream& os, const LinkedListStack& stack);
+
         void push(int value);
         void pop();
         int top() const;
@@ -26,6 +38,9 @@ namespace STRUCTS {
     private:
         std::unique_ptr<StackNode> head;
         int size;
+
+        void copyFrom(const LinkedListStack& other);
+        void moveFrom(LinkedListStack&& other) noexcept;
     };
 
 }

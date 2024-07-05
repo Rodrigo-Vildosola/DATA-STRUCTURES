@@ -3,12 +3,79 @@
 namespace STRUCTS {
 
     ArrayQueue::ArrayQueue(int capacity)
-        : capacity(capacity), size(0), frontIndex(0), rearIndex(-1) {
+        : size(0), capacity(capacity), frontIndex(0), rearIndex(-1) {
         data = std::make_unique<int[]>(static_cast<size_t>(capacity));
     }
 
     ArrayQueue::~ArrayQueue() {
         // unique_ptr automatically handles memory deallocation
+    }
+
+    ArrayQueue::ArrayQueue(const ArrayQueue& other)
+        : size(other.size), capacity(other.capacity), frontIndex(other.frontIndex), rearIndex(other.rearIndex) {
+        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
+        std::copy(&other.data[0], &other.data[static_cast<size_t>(capacity)], &data[0]);
+    }
+
+    ArrayQueue::ArrayQueue(ArrayQueue&& other) noexcept
+        : size(other.size), capacity(other.capacity), frontIndex(other.frontIndex), rearIndex(other.rearIndex), data(std::move(other.data)) {
+        other.size = 0;
+        other.capacity = 0;
+        other.frontIndex = 0;
+        other.rearIndex = -1;
+    }
+
+    ArrayQueue& ArrayQueue::operator=(const ArrayQueue& other) {
+        if (this == &other) {
+            return *this;
+        }
+        capacity = other.capacity;
+        size = other.size;
+        frontIndex = other.frontIndex;
+        rearIndex = other.rearIndex;
+        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
+        std::copy(&other.data[0], &other.data[static_cast<size_t>(capacity)], &data[0]);
+        return *this;
+    }
+
+    ArrayQueue& ArrayQueue::operator=(ArrayQueue&& other) noexcept {
+        if (this == &other) {
+            return *this;
+        }
+        capacity = other.capacity;
+        size = other.size;
+        frontIndex = other.frontIndex;
+        rearIndex = other.rearIndex;
+        data = std::move(other.data);
+        other.capacity = 0;
+        other.size = 0;
+        other.frontIndex = 0;
+        other.rearIndex = -1;
+        return *this;
+    }
+
+    bool ArrayQueue::operator==(const ArrayQueue& other) const {
+        if (size != other.size || capacity != other.capacity || frontIndex != other.frontIndex || rearIndex != other.rearIndex) {
+            return false;
+        }
+        for (int i = 0; i < size; ++i) {
+            if (data[(static_cast<size_t>(frontIndex) + static_cast<size_t>(i)) % static_cast<size_t>(capacity)] != 
+                other.data[(static_cast<size_t>(other.frontIndex) + static_cast<size_t>(i)) % static_cast<size_t>(other.capacity)]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool ArrayQueue::operator!=(const ArrayQueue& other) const {
+        return !(*this == other);
+    }
+
+    std::ostream& operator<<(std::ostream& os, const ArrayQueue& queue) {
+        for (int i = 0; i < queue.size; ++i) {
+            os << queue.data[(static_cast<size_t>(queue.frontIndex) + static_cast<size_t>(i)) % static_cast<size_t>(queue.capacity)] << " ";
+        }
+        return os;
     }
 
     void ArrayQueue::resize(int new_capacity) {

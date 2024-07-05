@@ -1,5 +1,4 @@
-#pragma once
-
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
@@ -10,6 +9,17 @@ namespace STRUCTS {
         ArrayStack();
         ~ArrayStack();
 
+        ArrayStack(const ArrayStack& other);
+        ArrayStack(ArrayStack&& other) noexcept;
+
+        ArrayStack& operator=(const ArrayStack& other);
+        ArrayStack& operator=(ArrayStack&& other) noexcept;
+
+        bool operator==(const ArrayStack& other) const;
+        bool operator!=(const ArrayStack& other) const;
+
+        friend std::ostream& operator<<(std::ostream& os, const ArrayStack& stack);
+
         void push(int value);
         void pop();
         int top() const;
@@ -19,9 +29,9 @@ namespace STRUCTS {
     private:
         void resize(int new_capacity);
 
-        std::unique_ptr<int[]> data;
         int size;
         int capacity;
+        std::unique_ptr<int[]> data;
     };
 
 }
