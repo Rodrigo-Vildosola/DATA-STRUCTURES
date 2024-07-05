@@ -1,4 +1,4 @@
-#include "BinaryTree/BinaryTree.h"
+#include "Trees/BinaryTree/BinaryTree.h"
 #include <climits>
 
 namespace STRUCTS {
@@ -121,59 +121,44 @@ namespace STRUCTS {
         return std::max(leftHeight, rightHeight) + 1;
     }
 
-    void BinaryTree::inorder() const {
-        inorderRec(root.get());
-        std::cout << std::endl;
+    void BinaryTree::traverse(const std::function<void(const int&)>& func, TraversalType type) const {
+        traverseRec(root.get(), func, type);
     }
 
-    void BinaryTree::inorderRec(const TreeNode* node) const {
+    void BinaryTree::traverseRec(TreeNode* node, const std::function<void(const int&)>& func, TraversalType type) const {
         if (node == nullptr) {
             return;
         }
-        inorderRec(node->left.get());
-        std::cout << node->data << " ";
-        inorderRec(node->right.get());
+
+        if (type == TraversalType::Preorder) {
+            func(node->data);
+        }
+
+        traverseRec(node->left.get(), func, type);
+
+        if (type == TraversalType::Inorder) {
+            func(node->data);
+        }
+
+        traverseRec(node->right.get(), func, type);
+
+        if (type == TraversalType::Postorder) {
+            func(node->data);
+        }
     }
 
-    void BinaryTree::preorder() const {
-        preorderRec(root.get());
-        std::cout << std::endl;
+
+    void BinaryTree::map(const std::function<int(int)>& func) {
+        mapRec(root.get(), func);
     }
 
-    void BinaryTree::preorderRec(const TreeNode* node) const {
+    void BinaryTree::mapRec(TreeNode* node, const std::function<int(int)>& func) {
         if (node == nullptr) {
             return;
         }
-        std::cout << node->data << " ";
-        preorderRec(node->left.get());
-        preorderRec(node->right.get());
-    }
 
-    void BinaryTree::postorder() const {
-        postorderRec(root.get());
-        std::cout << std::endl;
+        node->data = func(node->data);
+        mapRec(node->left.get(), func);
+        mapRec(node->right.get(), func);
     }
-
-    void BinaryTree::postorderRec(const TreeNode* node) const {
-        if (node == nullptr) {
-            return;
-        }
-        postorderRec(node->left.get());
-        postorderRec(node->right.get());
-        std::cout << node->data << " ";
-    }
-
-    void BinaryTree::traverse(const std::function<void(int&)>& func) {
-        traverseRec(root.get(), func);
-    }
-
-    void BinaryTree::traverseRec(TreeNode* node, const std::function<void(int&)>& func) {
-        if (node == nullptr) {
-            return;
-        }
-        func(node->data);
-        traverseRec(node->left.get(), func);
-        traverseRec(node->right.get(), func);
-    }
-
 }

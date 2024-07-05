@@ -3,10 +3,15 @@
 #include <memory>
 #include <functional>
 #include <stdexcept>
-#include <iostream>
 #include <algorithm>
 
 namespace STRUCTS {
+
+    enum class TraversalType {
+        Inorder,
+        Preorder,
+        Postorder
+    }; 
 
     struct TreeNode {
         int data;
@@ -30,11 +35,8 @@ namespace STRUCTS {
         int height() const;
         int size() const { return tree_size; }
 
-        void inorder() const;
-        void preorder() const;
-        void postorder() const;
-
-        void traverse(const std::function<void(int&)>& func);
+        void traverse(const std::function<void(const int&)>& func, TraversalType type = TraversalType::Inorder) const;
+        void map(const std::function<int(int)>& func);
 
     private:
         std::unique_ptr<TreeNode> root;
@@ -50,11 +52,9 @@ namespace STRUCTS {
         TreeNode* findMaxRec(TreeNode* node) const;
         int heightRec(const TreeNode* node) const;
 
-        void inorderRec(const TreeNode* node) const;
-        void preorderRec(const TreeNode* node) const;
-        void postorderRec(const TreeNode* node) const;
+        void traverseRec(TreeNode* node, const std::function<void(const int&)>& func, TraversalType type) const;
+        void mapRec(TreeNode* node, const std::function<int(int)>& func);
 
-        void traverseRec(TreeNode* node, const std::function<void(int&)>& func);
     };
 
 }

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <Structs.h>
+#include <sstream>
 
 TEST(BinaryTreeTest, InsertAndSearch) {
     STRUCTS::BinaryTree bt;
@@ -52,39 +53,31 @@ TEST(BinaryTreeTest, Height) {
 
 TEST(BinaryTreeTest, Traversal) {
     STRUCTS::BinaryTree bt;
-    std::stringstream ss;
 
     bt.insert(10);
     bt.insert(20);
     bt.insert(5);
 
-    // std::cout << "Inorder Traversal: ";
-    // bt.inorder();
-    // std::cout << "Preorder Traversal: ";
-    // bt.preorder();
-    // std::cout << "Postorder Traversal: ";
-    // bt.postorder();
-
     // Test inorder traversal
     testing::internal::CaptureStdout();
-    bt.inorder();
+    bt.traverse([](const int& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Inorder);
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "5 10 20 \n");
+    EXPECT_EQ(output, "5 10 20 ");
 
     // Test preorder traversal
     testing::internal::CaptureStdout();
-    bt.preorder();
+    bt.traverse([](const int& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Preorder);
     output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "10 5 20 \n");
+    EXPECT_EQ(output, "10 5 20 ");
 
     // Test postorder traversal
     testing::internal::CaptureStdout();
-    bt.postorder();
+    bt.traverse([](const int& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Postorder);
     output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "5 20 10 \n");
+    EXPECT_EQ(output, "5 20 10 ");
 }
 
-TEST(BinaryTreeTest, Traverse) {
+TEST(BinaryTreeTest, Map) {
     STRUCTS::BinaryTree bt;
 
     bt.insert(10);
@@ -92,11 +85,17 @@ TEST(BinaryTreeTest, Traverse) {
     bt.insert(5);
 
     // Multiply each node's value by 2
-    bt.traverse([](int& value) { value *= 2; });
+    bt.map([](int value) { return value * 2; });
 
-    EXPECT_TRUE(bt.search(20));  // Original 10
-    EXPECT_TRUE(bt.search(40));  // Original 20
-    EXPECT_TRUE(bt.search(10));  // Original 5
+    // Test inorder traversal after mapping
+    testing::internal::CaptureStdout();
+    bt.traverse([](const int& value) { std::cout << value << " "; }, STRUCTS::TraversalType::Inorder);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "10 20 40 ");
+
+    EXPECT_TRUE(bt.search(20));  // Original 10 -> 20
+    EXPECT_TRUE(bt.search(40));  // Original 20 -> 40
+    EXPECT_TRUE(bt.search(10));  // Original 5 -> 10
 }
 
 TEST(BinaryTreeTest, SizeAndHeightAfterOperations) {
@@ -136,4 +135,3 @@ TEST(BinaryTreeTest, MinMaxAfterOperations) {
     EXPECT_EQ(bt.findMin(), 5);
     EXPECT_EQ(bt.findMax(), 10);
 }
-

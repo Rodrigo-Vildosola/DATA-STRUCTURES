@@ -1,6 +1,10 @@
 // BinaryTreeDemo.cpp
 #include <iostream>
-#include "BinaryTree/BinaryTree.h"
+#include <Structs.h>
+
+void printNode(const int& value) {
+    std::cout << value << " ";
+}
 
 void testBinaryTree() {
     STRUCTS::BinaryTree bt;
@@ -16,13 +20,16 @@ void testBinaryTree() {
 
     // Print traversals
     std::cout << "In-order traversal: ";
-    bt.inorder();
+    bt.traverse(printNode, STRUCTS::TraversalType::Inorder);
+    std::cout << std::endl;
 
     std::cout << "Pre-order traversal: ";
-    bt.preorder();
+    bt.traverse(printNode, STRUCTS::TraversalType::Preorder);
+    std::cout << std::endl;
 
     std::cout << "Post-order traversal: ";
-    bt.postorder();
+    bt.traverse(printNode, STRUCTS::TraversalType::Postorder);
+    std::cout << std::endl;
 
     // Search for values
     std::cout << "Search 10: " << (bt.search(10) ? "Found" : "Not Found") << std::endl;
@@ -39,18 +46,22 @@ void testBinaryTree() {
     // Remove values
     bt.remove(20);
     std::cout << "In-order traversal after removing 20: ";
-    bt.inorder();
+    bt.traverse(printNode, STRUCTS::TraversalType::Inorder);
+    std::cout << std::endl;
 
     bt.remove(10);
     std::cout << "In-order traversal after removing 10: ";
-    bt.inorder();
+    bt.traverse(printNode, STRUCTS::TraversalType::Inorder);
+    std::cout << std::endl;
 
     // Traverse with a custom function
     std::cout << "Traverse with a custom function (multiply by 2): ";
-    bt.traverse([](int& value) { value *= 2; });
+    bt.map([](int value) { return value * 2; });
     std::cout << std::endl;
-    bt.inorder();
 
+    std::cout << "In-order traversal after multiplying by 2: ";
+    bt.traverse(printNode, STRUCTS::TraversalType::Inorder);
+    std::cout << std::endl;
 }
 
 int main() {
