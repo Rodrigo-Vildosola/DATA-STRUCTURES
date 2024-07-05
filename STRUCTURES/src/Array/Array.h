@@ -2,9 +2,10 @@
 
 #include <functional>
 #include <memory>
+#include <stdexcept>
+#include <algorithm>
 
 namespace STRUCTS {
-
 
     class Array {
     public:
@@ -12,6 +13,10 @@ namespace STRUCTS {
         Array(int capacity);
         ~Array();
 
+        Array(const Array& other); 
+        Array& operator=(const Array& other); 
+        Array(Array&& other) noexcept; 
+        Array& operator=(Array&& other) noexcept;
 
         void append(int value);
         void insert(int index, int value);
@@ -21,19 +26,23 @@ namespace STRUCTS {
         void traverse(const std::function<void(int)>& func) const;
         bool search(int value) const;
 
-
-        int getSize() { return size; }
-        int getCapacity() { return capacity; }
-
+        int getSize() const { return size; }
+        int getCapacity() const { return capacity; }
         bool isEmpty() const;
+
+        int& operator[](int index); 
+        const int& operator[](int index) const; 
+
+        bool operator==(const Array& other) const; 
+        bool operator!=(const Array& other) const; 
+
     private:
-
         void resize(int new_capacity);
+        void copyFrom(const Array& other);
 
-        std::unique_ptr<int[]> data;
         int size;
         int capacity;
+        std::unique_ptr<int[]> data;
     };
-
 
 }

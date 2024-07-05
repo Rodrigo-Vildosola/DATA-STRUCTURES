@@ -19,10 +19,13 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
+# Common compiler warnings
+set(COMMON_WARNINGS "-Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wsign-conversion -Wnull-dereference")
+
 # Add different compiler flags for different build types
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wextra -Wno-unused-parameter")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -Wall -Wextra -Wno-unused-parameter")
-set(CMAKE_CXX_FLAGS_DIST "-O3 -DNDEBUG -Wall -Wextra -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 ${COMMON_WARNINGS} -Werror")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG ${COMMON_WARNINGS}")
+set(CMAKE_CXX_FLAGS_DIST "-O3 -DNDEBUG ${COMMON_WARNINGS}")
 
 # Add definitions based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

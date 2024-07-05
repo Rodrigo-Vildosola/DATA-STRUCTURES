@@ -4,7 +4,7 @@ namespace STRUCTS {
 
     ArrayQueue::ArrayQueue(int capacity)
         : capacity(capacity), size(0), frontIndex(0), rearIndex(-1) {
-        data = std::make_unique<int[]>(capacity);
+        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
     }
 
     ArrayQueue::~ArrayQueue() {
@@ -12,9 +12,9 @@ namespace STRUCTS {
     }
 
     void ArrayQueue::resize(int new_capacity) {
-        std::unique_ptr<int[]> new_data = std::make_unique<int[]>(new_capacity);
+        std::unique_ptr<int[]> new_data = std::make_unique<int[]>(static_cast<size_t>(new_capacity));
         for (int i = 0; i < size; ++i) {
-            new_data[i] = data[(frontIndex + i) % capacity];
+            new_data[static_cast<size_t>(i)] = data[(static_cast<size_t>(frontIndex) + static_cast<size_t>(i)) % static_cast<size_t>(capacity)];
         }
         data = std::move(new_data);
         capacity = new_capacity;
@@ -27,7 +27,7 @@ namespace STRUCTS {
             resize(capacity * 2);
         }
         rearIndex = (rearIndex + 1) % capacity;
-        data[rearIndex] = value;
+        data[static_cast<size_t>(rearIndex)] = value;
         ++size;
     }
 
@@ -35,7 +35,7 @@ namespace STRUCTS {
         if (isEmpty()) {
             throw std::out_of_range("Dequeue Error: Queue is empty.");
         }
-        int value = data[frontIndex];
+        int value = data[static_cast<size_t>(frontIndex)];
         frontIndex = (frontIndex + 1) % capacity;
         --size;
         return value;
@@ -45,7 +45,7 @@ namespace STRUCTS {
         if (isEmpty()) {
             throw std::out_of_range("Front Error: Queue is empty.");
         }
-        return data[frontIndex];
+        return data[static_cast<size_t>(frontIndex)];
     }
 
     bool ArrayQueue::isEmpty() const {

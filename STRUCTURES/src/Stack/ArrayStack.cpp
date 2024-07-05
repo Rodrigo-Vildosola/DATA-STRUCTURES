@@ -3,7 +3,7 @@
 namespace STRUCTS {
 
     ArrayStack::ArrayStack() : size(0), capacity(10) {
-        data = std::make_unique<int[]>(capacity);
+        data = std::make_unique<int[]>(static_cast<size_t>(capacity));
     }
 
     ArrayStack::~ArrayStack() {
@@ -11,8 +11,8 @@ namespace STRUCTS {
     }
 
     void ArrayStack::resize(int new_capacity) {
-        std::unique_ptr<int[]> new_data = std::make_unique<int[]>(new_capacity);
-        std::copy(&data[0], &data[size], &new_data[0]);
+        std::unique_ptr<int[]> new_data = std::make_unique<int[]>(static_cast<size_t>(new_capacity));
+        std::copy(&data[0], &data[static_cast<size_t>(size)], &new_data[0]);
         data = std::move(new_data);
         capacity = new_capacity;
     }
@@ -21,7 +21,7 @@ namespace STRUCTS {
         if (size >= capacity) {
             resize(capacity * 2);
         }
-        data[size++] = value;
+        data[static_cast<size_t>(size++)] = value;
     }
 
     void ArrayStack::pop() {
@@ -35,7 +35,7 @@ namespace STRUCTS {
         if (isEmpty()) {
             throw std::out_of_range("Top Error: Stack is empty.");
         }
-        return data[size - 1];
+        return data[static_cast<size_t>(size - 1)];
     }
 
     bool ArrayStack::isEmpty() const {

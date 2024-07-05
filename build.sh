@@ -11,13 +11,14 @@ ALLOWED_BUILD_TYPES=("Debug" "Release" "Dist")
 
 # Function to display usage
 function usage() {
-    echo "Usage: $0 [clean|build|run|recreate] [Debug|Release|Dist] [array|linked_list]"
-    echo "  clean         - Remove the build directory"
-    echo "  build         - Create the build directory and compile the project"
-    echo "  run           - Build and run the project (default array)"
-    echo "  recreate      - Remove the build directory and rebuild"
-    echo "  Debug|Release|Dist - Optional: specify build type (default is Release)"
-    echo "  Array|LinkedList - Optional: specify program to run (default is array)"
+    echo "Usage: $0 [clean|build|run|recreate|test] [array|linked_list] [Debug|Release|Dist]"
+    echo "  clean                - Remove the build directory"
+    echo "  build                - Create the build directory and compile the project"
+    echo "  run                  - Build and run the project (default array)"
+    echo "  recreate             - Remove the build directory and rebuild"
+    echo "  test                 - Build and run tests"
+    echo "  Array|LinkedList     - Optional: specify program to run (default is array)"
+    echo "  Debug|Release|Dist   - Optional: specify build type (default is Release)"
 }
 
 # Check if the build type is allowed
@@ -31,21 +32,24 @@ function is_valid_build_type() {
     return 1
 }
 
-PROGRAM="array"
+# Default program to run
+PROGRAM="ArrayDemo"
 
-# Check arguments
-if [ $# -lt 1 ] || [ $# -gt 3 ]; then
-    usage
-    exit 1
-fi
+# Parse arguments
+ACTION=$1
+shift
 
-if [ $# -ge 2 ]; then
-    BUILD_TYPE=$2
-fi
-
-if [ $# -ge 3 ]; then
-    PROGRAM=$3
-fi
+while (( "$#" )); do
+    case "$1" in
+        Debug|Release|Dist)
+            BUILD_TYPE=$1
+            ;;
+        *)
+            PROGRAM=$1
+            ;;
+    esac
+    shift
+done
 
 if ! is_valid_build_type "$BUILD_TYPE"; then
     echo "Error: Invalid build type '$BUILD_TYPE'"
@@ -53,7 +57,7 @@ if ! is_valid_build_type "$BUILD_TYPE"; then
     exit 1
 fi
 
-case $1 in
+case $ACTION in
     clean)
         echo "Cleaning build directory..."
         rm -rf $BUILD_DIR

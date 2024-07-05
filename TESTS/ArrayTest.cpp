@@ -56,6 +56,75 @@ TEST(ArrayTest, Search) {
     EXPECT_FALSE(array.search(4));
 }
 
+TEST(ArrayTest, CopyConstructor) {
+    STRUCTS::Array array1;
+    array1.append(1);
+    array1.append(2);
+    STRUCTS::Array array2 = array1;
+    EXPECT_EQ(array2.getSize(), 2);
+    EXPECT_EQ(array2.get(0), 1);
+    EXPECT_EQ(array2.get(1), 2);
+    EXPECT_TRUE(array2 == array1);
+}
+
+TEST(ArrayTest, MoveConstructor) {
+    STRUCTS::Array array1;
+    array1.append(1);
+    array1.append(2);
+    STRUCTS::Array array2 = std::move(array1);
+    EXPECT_EQ(array2.getSize(), 2);
+    EXPECT_EQ(array2.get(0), 1);
+    EXPECT_EQ(array2.get(1), 2);
+    EXPECT_EQ(array1.getSize(), 0);  // array1 should be empty after move
+}
+
+TEST(ArrayTest, CopyAssignmentOperator) {
+    STRUCTS::Array array1;
+    array1.append(1);
+    array1.append(2);
+    STRUCTS::Array array2;
+    array2 = array1;
+    EXPECT_EQ(array2.getSize(), 2);
+    EXPECT_EQ(array2.get(0), 1);
+    EXPECT_EQ(array2.get(1), 2);
+    EXPECT_TRUE(array2 == array1);
+}
+
+TEST(ArrayTest, MoveAssignmentOperator) {
+    STRUCTS::Array array1;
+    array1.append(1);
+    array1.append(2);
+    STRUCTS::Array array2;
+    array2 = std::move(array1);
+    EXPECT_EQ(array2.getSize(), 2);
+    EXPECT_EQ(array2.get(0), 1);
+    EXPECT_EQ(array2.get(1), 2);
+    EXPECT_EQ(array1.getSize(), 0);  // array1 should be empty after move
+}
+
+TEST(ArrayTest, IndexOperator) {
+    STRUCTS::Array array;
+    array.append(1);
+    array.append(2);
+    EXPECT_EQ(array[0], 1);
+    EXPECT_EQ(array[1], 2);
+    array[1] = 3;
+    EXPECT_EQ(array[1], 3);
+}
+
+TEST(ArrayTest, EqualityOperators) {
+    STRUCTS::Array array1;
+    array1.append(1);
+    array1.append(2);
+    STRUCTS::Array array2;
+    array2.append(1);
+    array2.append(2);
+    EXPECT_TRUE(array1 == array2);
+    array2.append(3);
+    EXPECT_FALSE(array1 == array2);
+    EXPECT_TRUE(array1 != array2);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
