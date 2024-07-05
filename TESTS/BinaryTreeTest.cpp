@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <Structs.h>
 #include <sstream>
+#include <climits>
 
 TEST(BinaryTreeTest, InsertAndSearch) {
     STRUCTS::BinaryTree<int> bt;
