@@ -11,6 +11,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build-type: [Debug, Release]
 
     steps:
     - name: Checkout code
@@ -19,16 +22,52 @@ jobs:
     - name: Set up submodules
       run: git submodule update --init --recursive
 
+    - name: Cache CMake
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/cmake
+          build
+        key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake ninja-build
 
-    - name: Run build script
-      run: |
-        chmod +x build.sh
-        ./build.sh build Release
+    - name: Configure CMake
+      run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+
+    - name: Build
+      run: cmake --build build --config ${{ matrix.build-type }}
 
     - name: Run tests
       run: |
-        ./build.sh test Release
+        cd build
+        ctest --output-on-failure --parallel $(nproc)
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install clang-format
+      run: sudo apt-get install -y clang-format
+
+    - name: Run clang-format
+      run: clang-format -i $(find . -name '*.cpp' -o -name '*.h')
+
+  static-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install cppcheck
+      run: sudo apt-get install -y cppcheck
+
+    - name: Run cppcheck
+      run: cppcheck --enable=all --inconclusive --std=c++17 --error-exitcode=1 .
