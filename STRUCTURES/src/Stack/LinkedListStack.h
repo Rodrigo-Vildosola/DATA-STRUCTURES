@@ -1,18 +1,20 @@
 #pragma once
 
 #include <memory>
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 namespace STRUCTS {
 
+    template <typename T>
     struct StackNode {
-        int data;
-        std::unique_ptr<StackNode> next;
+        T data;
+        std::unique_ptr<StackNode<T>> next;
 
-        StackNode(int initial_data) : data(initial_data), next(nullptr) {}
+        StackNode(const T& initial_data) : data(initial_data), next(nullptr) {}
     };
 
+    template <typename T>
     class LinkedListStack {
     public:
         LinkedListStack();
@@ -27,16 +29,18 @@ namespace STRUCTS {
         bool operator==(const LinkedListStack& other) const;
         bool operator!=(const LinkedListStack& other) const;
 
-        friend std::ostream& operator<<(std::ostream& os, const LinkedListStack& stack);
-
-        void push(int value);
+        void push(const T& value);
         void pop();
-        int top() const;
+        T top() const;
         bool isEmpty() const;
         int getSize() const;
+        void clear();
+
+        template <typename U>
+        friend std::ostream& operator<<(std::ostream& os, const LinkedListStack<U>& stack);
 
     private:
-        std::unique_ptr<StackNode> head;
+        std::unique_ptr<StackNode<T>> head;
         int size;
 
         void copyFrom(const LinkedListStack& other);
@@ -44,3 +48,6 @@ namespace STRUCTS {
     };
 
 }
+
+#include "Stack/LinkedListStack.tpp"
+

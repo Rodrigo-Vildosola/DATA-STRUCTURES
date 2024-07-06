@@ -1,9 +1,12 @@
-#include <iostream>
+#pragma once
+
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 
 namespace STRUCTS {
 
+    template <typename T>
     class ArrayStack {
     public:
         ArrayStack(int initial_capacity = 10);
@@ -18,20 +21,25 @@ namespace STRUCTS {
         bool operator==(const ArrayStack& other) const;
         bool operator!=(const ArrayStack& other) const;
 
-        friend std::ostream& operator<<(std::ostream& os, const ArrayStack& stack);
-
-        void push(int value);
+        void push(const T& value);
         void pop();
-        int top() const;
+        T top() const;
         bool isEmpty() const;
         int getSize() const;
+        void clear();
+
+        template <typename U>
+        friend std::ostream& operator<<(std::ostream& os, const ArrayStack<U>& stack);
 
     private:
         void resize(int new_capacity);
 
         int size;
         int capacity;
-        std::unique_ptr<int[]> data;
+        std::unique_ptr<T[]> data;
     };
 
 }
+
+
+#include "Stack/ArrayStack.tpp"

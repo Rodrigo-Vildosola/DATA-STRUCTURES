@@ -7,55 +7,103 @@ namespace STRUCTS {
 
 }
 
+#include <iostream>
+#include <string>
 
-void demoArrayStack() {
-    std::cout << "Testing ArrayStack..." << std::endl;
+class Person {
+public:
+    std::string name;
+    int age;
 
-    STRUCTS::ArrayStack arrayStack;
+    Person() : name(""), age(0) {}
+    Person(std::string name, int age) : name(name), age(age) {}
 
+    bool operator==(const Person& other) const {
+        return name == other.name && age == other.age;
+    }
+
+    bool operator!=(const Person& other) const {
+        return !(*this == other);
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Person& person) {
+        os << person.name << " (" << person.age << ")";
+        return os;
+    }
+};
+
+
+
+template <typename Stack>
+void demoStack(Stack& stack) {
     std::cout << "Pushing elements: 1, 2, 3" << std::endl;
-    arrayStack.push(1);
-    arrayStack.push(2);
-    arrayStack.push(3);
+    stack.push(1);
+    stack.push(2);
+    stack.push(3);
 
-    std::cout << "Top element: " << arrayStack.top() << std::endl;
+    std::cout << "Top element: " << stack.top() << std::endl;
 
     std::cout << "Popping top element." << std::endl;
-    arrayStack.pop();
-    std::cout << "New top element: " << arrayStack.top() << std::endl;
+    stack.pop();
+    std::cout << "New top element: " << stack.top() << std::endl;
 
-    std::cout << "Stack size: " << arrayStack.getSize() << std::endl;
-    std::cout << "Is stack empty? " << (arrayStack.isEmpty() ? "Yes" : "No") << std::endl;
+    std::cout << "Stack size: " << stack.getSize() << std::endl;
+    std::cout << "Is stack empty? " << (stack.isEmpty() ? "Yes" : "No") << std::endl;
 
     std::cout << "Popping all elements." << std::endl;
-    arrayStack.pop();
-    arrayStack.pop();
-    std::cout << "Is stack empty? " << (arrayStack.isEmpty() ? "Yes" : "No") << std::endl;
+    stack.pop();
+    stack.pop();
+    std::cout << "Is stack empty? " << (stack.isEmpty() ? "Yes" : "No") << std::endl;
+}
+
+template <typename Stack, typename T>
+void demoStackGeneric(Stack& stack, const T& value1, const T& value2, const T& value3) {
+    std::cout << "Pushing elements: " << value1 << ", " << value2 << ", " << value3 << std::endl;
+    stack.push(value1);
+    stack.push(value2);
+    stack.push(value3);
+
+    std::cout << "Top element: " << stack.top() << std::endl;
+
+    std::cout << "Popping top element." << std::endl;
+    stack.pop();
+    std::cout << "New top element: " << stack.top() << std::endl;
+
+    std::cout << "Stack size: " << stack.getSize() << std::endl;
+    std::cout << "Is stack empty? " << (stack.isEmpty() ? "Yes" : "No") << std::endl;
+
+    std::cout << "Popping all elements." << std::endl;
+    stack.pop();
+    stack.pop();
+    std::cout << "Is stack empty? " << (stack.isEmpty() ? "Yes" : "No") << std::endl;
+}
+
+void demoArrayStack() {
+    std::cout << "Testing ArrayStack<int>..." << std::endl;
+    STRUCTS::ArrayStack<int> intArrayStack;
+    demoStack(intArrayStack);
+
+    std::cout << "\nTesting ArrayStack<std::string>..." << std::endl;
+    STRUCTS::ArrayStack<std::string> stringArrayStack;
+    demoStackGeneric(stringArrayStack, std::string("one"), std::string("two"), std::string("three"));
+
+    std::cout << "\nTesting ArrayStack<Person>..." << std::endl;
+    STRUCTS::ArrayStack<Person> personArrayStack;
+    demoStackGeneric(personArrayStack, Person("Alice", 30), Person("Bob", 25), Person("Charlie", 35));
 }
 
 void demoLinkedListStack() {
-    std::cout << "Testing LinkedListStack..." << std::endl;
+    std::cout << "Testing LinkedListStack<int>..." << std::endl;
+    STRUCTS::LinkedListStack<int> intLinkedListStack;
+    demoStack(intLinkedListStack);
 
-    STRUCTS::LinkedListStack linkedListStack;
+    std::cout << "\nTesting LinkedListStack<std::string>..." << std::endl;
+    STRUCTS::LinkedListStack<std::string> stringLinkedListStack;
+    demoStackGeneric(stringLinkedListStack, std::string("one"), std::string("two"), std::string("three"));
 
-    std::cout << "Pushing elements: 1, 2, 3" << std::endl;
-    linkedListStack.push(1);
-    linkedListStack.push(2);
-    linkedListStack.push(3);
-
-    std::cout << "Top element: " << linkedListStack.top() << std::endl;
-
-    std::cout << "Popping top element." << std::endl;
-    linkedListStack.pop();
-    std::cout << "New top element: " << linkedListStack.top() << std::endl;
-
-    std::cout << "Stack size: " << linkedListStack.getSize() << std::endl;
-    std::cout << "Is stack empty? " << (linkedListStack.isEmpty() ? "Yes" : "No") << std::endl;
-
-    std::cout << "Popping all elements." << std::endl;
-    linkedListStack.pop();
-    linkedListStack.pop();
-    std::cout << "Is stack empty? " << (linkedListStack.isEmpty() ? "Yes" : "No") << std::endl;
+    std::cout << "\nTesting LinkedListStack<Person>..." << std::endl;
+    STRUCTS::LinkedListStack<Person> personLinkedListStack;
+    demoStackGeneric(personLinkedListStack, Person("Alice", 30), Person("Bob", 25), Person("Charlie", 35));
 }
 
 int main() {
