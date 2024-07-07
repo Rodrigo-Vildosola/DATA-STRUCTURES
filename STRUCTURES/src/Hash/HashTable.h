@@ -7,39 +7,44 @@
 
 namespace STRUCTS {
 
+    template <typename KeyType, typename ValueType>
     struct HashNode {
-        int key;
-        int value;
+        KeyType key;
+        ValueType value;
         std::unique_ptr<HashNode> next;
 
-        HashNode(int k, int v) : key(k), value(v), next(nullptr) {}
+        HashNode(KeyType k, ValueType v) : key(k), value(v), next(nullptr) {}
     };
 
+    template <typename KeyType, typename ValueType, typename Hash = std::hash<KeyType>>
     class HashTable {
     public:
-        HashTable(int initial_capacity = 10);
+        HashTable(size_t initial_capacity = 10);
         ~HashTable();
 
-        void insert(int key, int value);
-        void remove(int key);
-        int search(int key) const;
-        bool contains(int key) const;
+        void insert(const KeyType& key, const ValueType& value);
+        void remove(const KeyType& key);
+        ValueType search(const KeyType& key) const;
+        bool contains(const KeyType& key) const;
 
         // Operator overloads
-        int& operator[](int key);
+        ValueType& operator[](const KeyType& key);
         bool operator==(const HashTable& other) const;
         bool operator!=(const HashTable& other) const;
 
-        int getSize() { return size; }
-        int getCapacity() { return capacity; }
+        size_t getSize() const { return size; }
+        size_t getCapacity() const { return capacity; }
 
     private:
-        int hashFunction(int key) const;
-        void resize(int new_capacity);
+        size_t hashFunction(const KeyType& key) const;
+        void resize(size_t new_capacity);
 
-        int capacity;
-        int size;
-        std::unique_ptr<std::unique_ptr<HashNode>[]> table;
+        size_t capacity;
+        size_t size;
+        std::vector<std::unique_ptr<HashNode<KeyType, ValueType>>> table;
+        Hash hasher;
     };
 
 }
+
+#include "Hash/HashTable.tpp"

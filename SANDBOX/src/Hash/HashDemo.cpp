@@ -1,14 +1,31 @@
 #include <iostream>
 #include <Structs.h>
+#include <string>
 
-namespace STRUCTS {
+// Custom data type
+struct Person {
+    std::string name;
+    int age;
 
+    bool operator==(const Person& other) const {
+        return name == other.name && age == other.age;
+    }
+};
+
+// Hash specialization for custom data type
+namespace std {
+    template <>
+    struct hash<Person> {
+        std::size_t operator()(const Person& p) const {
+            return hash<std::string>()(p.name) ^ hash<int>()(p.age);
+        }
+    };
 }
 
 void testHashTableInsert() {
-    std::cout << "Testing HashTable Insert..." << std::endl;
+    std::cout << "Testing HashTable Insert with int..." << std::endl;
 
-    STRUCTS::HashTable hashTable(10);
+    STRUCTS::HashTable<int, int> hashTable(10);
 
     hashTable.insert(1, 10);
     hashTable.insert(2, 20);
@@ -18,9 +35,9 @@ void testHashTableInsert() {
 }
 
 void testHashTableSearch() {
-    std::cout << "Testing HashTable Search..." << std::endl;
+    std::cout << "Testing HashTable Search with int..." << std::endl;
 
-    STRUCTS::HashTable hashTable(10);
+    STRUCTS::HashTable<int, int> hashTable(10);
 
     hashTable.insert(1, 10);
     hashTable.insert(2, 20);
@@ -38,9 +55,9 @@ void testHashTableSearch() {
 }
 
 void testHashTableRemove() {
-    std::cout << "Testing HashTable Remove..." << std::endl;
+    std::cout << "Testing HashTable Remove with int..." << std::endl;
 
-    STRUCTS::HashTable hashTable(10);
+    STRUCTS::HashTable<int, int> hashTable(10);
 
     hashTable.insert(1, 10);
     hashTable.insert(2, 20);
@@ -58,9 +75,9 @@ void testHashTableRemove() {
 }
 
 void testHashTableContains() {
-    std::cout << "Testing HashTable Contains..." << std::endl;
+    std::cout << "Testing HashTable Contains with int..." << std::endl;
 
-    STRUCTS::HashTable hashTable(10);
+    STRUCTS::HashTable<int, int> hashTable(10);
 
     hashTable.insert(1, 10);
     hashTable.insert(2, 20);
@@ -71,9 +88,9 @@ void testHashTableContains() {
 }
 
 void testHashTableResize() {
-    std::cout << "Testing HashTable Resize..." << std::endl;
+    std::cout << "Testing HashTable Resize with int..." << std::endl;
 
-    STRUCTS::HashTable hashTable(2);
+    STRUCTS::HashTable<int, int> hashTable(2);
 
     for (int i = 0; i < 10; ++i) {
         std::cout << "Size: " << hashTable.getSize() << " Capacity: " << hashTable.getCapacity() << std::endl;
@@ -86,10 +103,10 @@ void testHashTableResize() {
 }
 
 void testHashTableOperators() {
-    std::cout << "Testing HashTable Operators..." << std::endl;
+    std::cout << "Testing HashTable Operators with int..." << std::endl;
 
-    STRUCTS::HashTable hashTable1(10);
-    STRUCTS::HashTable hashTable2(10);
+    STRUCTS::HashTable<int, int> hashTable1(10);
+    STRUCTS::HashTable<int, int> hashTable2(10);
 
     hashTable1.insert(1, 10);
     hashTable1.insert(2, 20);
@@ -109,6 +126,42 @@ void testHashTableOperators() {
     std::cout << "HashTable1 == HashTable2 after using subscript operator: " << (hashTable1 == hashTable2 ? "True" : "False") << std::endl;
 }
 
+void testHashTableString() {
+    std::cout << "Testing HashTable with std::string keys..." << std::endl;
+
+    STRUCTS::HashTable<std::string, int> hashTable(10);
+
+    hashTable.insert("one", 10);
+    hashTable.insert("two", 20);
+    hashTable.insert("three", 30);
+
+    std::cout << "Inserted key-value pairs: (\"one\", 10), (\"two\", 20), (\"three\", 30)" << std::endl;
+
+    std::cout << "Value for key \"one\": " << hashTable.search("one") << std::endl;
+    std::cout << "Value for key \"two\": " << hashTable.search("two") << std::endl;
+    std::cout << "Value for key \"three\": " << hashTable.search("three") << std::endl;
+}
+
+void testHashTablePerson() {
+    std::cout << "Testing HashTable with Person keys..." << std::endl;
+
+    STRUCTS::HashTable<Person, int> hashTable(10);
+
+    Person p1{"Alice", 30};
+    Person p2{"Bob", 25};
+    Person p3{"Charlie", 35};
+
+    hashTable.insert(p1, 100);
+    hashTable.insert(p2, 200);
+    hashTable.insert(p3, 300);
+
+    std::cout << "Inserted key-value pairs: (\"Alice\", 30), (\"Bob\", 25), (\"Charlie\", 35)" << std::endl;
+
+    std::cout << "Value for key (\"Alice\", 30): " << hashTable.search(p1) << std::endl;
+    std::cout << "Value for key (\"Bob\", 25): " << hashTable.search(p2) << std::endl;
+    std::cout << "Value for key (\"Charlie\", 35): " << hashTable.search(p3) << std::endl;
+}
+
 int main() {
     testHashTableInsert();
     std::cout << std::endl;
@@ -126,6 +179,13 @@ int main() {
     std::cout << std::endl;
 
     testHashTableOperators();
+    std::cout << std::endl;
+
+    testHashTableString();
+    std::cout << std::endl;
+
+    testHashTablePerson();
+    std::cout << std::endl;
 
     return 0;
 }

@@ -91,7 +91,7 @@ namespace STRUCTS {
     template <typename T>
     void Array<T>::resize(int new_capacity) {
         std::unique_ptr<T[]> new_data = std::make_unique<T[]>(static_cast<size_t>(new_capacity));
-        std::copy(&data[0], &data[static_cast<size_t>(size)], &new_data[0]);
+        std::move(&data[0], &data[static_cast<size_t>(size)], &new_data[0]); // Use std::move for better performance
         data = std::move(new_data);
         capacity = new_capacity;
     }
@@ -163,15 +163,9 @@ namespace STRUCTS {
         }
     }
 
-
     template <typename T>
     bool Array<T>::search(const T& value) const {
-        for (int i = 0; i < size; ++i) {
-            if (data[static_cast<size_t>(i)] == value) {
-                return true;
-            }
-        }
-        return false;
+        return std::find(&data[0], &data[static_cast<size_t>(size)], value) != &data[static_cast<size_t>(size)];
     }
 
     template <typename T>
@@ -179,4 +173,4 @@ namespace STRUCTS {
         return size == 0;
     }
 
-}
+} // namespace STRUCTS

@@ -1,29 +1,28 @@
-#include "Trees/BinaryTree/BinaryTree.h"
+#include "Trees/BST/BinarySearchTree.h"
 
 namespace STRUCTS {
 
     template<typename T, typename Compare>
-    BinaryTree<T, Compare>::BinaryTree() : root(nullptr), tree_size(0), tree_height(-1), compare(Compare()) {}
+    BinarySearchTree<T, Compare>::BinarySearchTree() : root(nullptr), tree_size(0), compare(Compare()) {}
 
     template<typename T, typename Compare>
-    BinaryTree<T, Compare>::BinaryTree(Compare comp) : root(nullptr), tree_size(0), tree_height(-1), compare(comp) {}
+    BinarySearchTree<T, Compare>::BinarySearchTree(Compare comp) : root(nullptr), tree_size(0), compare(comp) {}
 
     template<typename T, typename Compare>
-    BinaryTree<T, Compare>::~BinaryTree() {
+    BinarySearchTree<T, Compare>::~BinarySearchTree() {
         // unique_ptr automatically handles memory deallocation
     }
 
     template<typename T, typename Compare>
-    void BinaryTree<T, Compare>::insert(const T& value) {
+    void BinarySearchTree<T, Compare>::insert(const T& value) {
         root = insertRec(std::move(root), value);
         tree_size++;
-        tree_height = height();
     }
 
     template<typename T, typename Compare>
-    std::unique_ptr<BTNode<T>> BinaryTree<T, Compare>::insertRec(std::unique_ptr<BTNode<T>> node, const T& value) {
+    std::unique_ptr<BSTNode<T>> BinarySearchTree<T, Compare>::insertRec(std::unique_ptr<BSTNode<T>> node, const T& value) {
         if (node == nullptr) {
-            return std::make_unique<BTNode<T>>(value);
+            return std::make_unique<BSTNode<T>>(value);
         }
         if (compare(value, node->data)) {
             node->left = insertRec(std::move(node->left), value);
@@ -34,12 +33,12 @@ namespace STRUCTS {
     }
 
     template<typename T, typename Compare>
-    bool BinaryTree<T, Compare>::search(const T& value) const {
+    bool BinarySearchTree<T, Compare>::search(const T& value) const {
         return searchRec(root.get(), value);
     }
 
     template<typename T, typename Compare>
-    bool BinaryTree<T, Compare>::searchRec(const BTNode<T>* node, const T& value) const {
+    bool BinarySearchTree<T, Compare>::searchRec(const BSTNode<T>* node, const T& value) const {
         if (node == nullptr) {
             return false;
         }
@@ -53,14 +52,13 @@ namespace STRUCTS {
     }
 
     template<typename T, typename Compare>
-    void BinaryTree<T, Compare>::remove(const T& value) {
+    void BinarySearchTree<T, Compare>::remove(const T& value) {
         root = removeRec(std::move(root), value);
         tree_size--;
-        tree_height = height();
     }
 
     template<typename T, typename Compare>
-    std::unique_ptr<BTNode<T>> BinaryTree<T, Compare>::removeRec(std::unique_ptr<BTNode<T>> node, const T& value) {
+    std::unique_ptr<BSTNode<T>> BinarySearchTree<T, Compare>::removeRec(std::unique_ptr<BSTNode<T>> node, const T& value) {
         if (node == nullptr) {
             return node;
         }
@@ -74,7 +72,7 @@ namespace STRUCTS {
             } else if (node->right == nullptr) {
                 return std::move(node->left);
             }
-            BTNode<T>* minNode = node->right.get();
+            BSTNode<T>* minNode = node->right.get();
             while (minNode->left != nullptr) {
                 minNode = minNode->left.get();
             }
@@ -85,12 +83,12 @@ namespace STRUCTS {
     }
 
     template<typename T, typename Compare>
-    int BinaryTree<T, Compare>::height() const {
+    int BinarySearchTree<T, Compare>::height() const {
         return heightRec(root.get());
     }
 
     template<typename T, typename Compare>
-    int BinaryTree<T, Compare>::heightRec(const BTNode<T>* node) const {
+    int BinarySearchTree<T, Compare>::heightRec(const BSTNode<T>* node) const {
         if (node == nullptr) {
             return -1;
         }
@@ -100,12 +98,12 @@ namespace STRUCTS {
     }
 
     template<typename T, typename Compare>
-    void BinaryTree<T, Compare>::traverse(const std::function<void(const T&)>& func, TraversalType type) const {
+    void BinarySearchTree<T, Compare>::traverse(const std::function<void(const T&)>& func, TraversalType type) const {
         traverseRec(root.get(), func, type);
     }
 
     template<typename T, typename Compare>
-    void BinaryTree<T, Compare>::traverseRec(BTNode<T>* node, const std::function<void(const T&)>& func, TraversalType type) const {
+    void BinarySearchTree<T, Compare>::traverseRec(BSTNode<T>* node, const std::function<void(const T&)>& func, TraversalType type) const {
         if (node == nullptr) {
             return;
         }
@@ -128,12 +126,12 @@ namespace STRUCTS {
     }
 
     template<typename T, typename Compare>
-    void BinaryTree<T, Compare>::map(const std::function<T(T)>& func) {
+    void BinarySearchTree<T, Compare>::map(const std::function<T(T)>& func) {
         mapRec(root.get(), func);
     }
 
     template<typename T, typename Compare>
-    void BinaryTree<T, Compare>::mapRec(BTNode<T>* node, const std::function<T(T)>& func) {
+    void BinarySearchTree<T, Compare>::mapRec(BSTNode<T>* node, const std::function<T(T)>& func) {
         if (node == nullptr) {
             return;
         }

@@ -61,17 +61,18 @@ size_t calculateMemoryUsage(const STRUCTS::Array<T>& array) {
 template <typename T>
 size_t calculateMemoryUsage(const STRUCTS::LinkedList<T>& list) {
     size_t memoryUsage = sizeof(list);
-    const auto* current = list.getHead();
-    std:: cout << sizeof(*current) << "aa" << std::endl;
-    while (current) {
-        memoryUsage += sizeof(*current);
-        current = current->next.get();
-    }
+
+    list.traverse([&memoryUsage](const T& value) {
+        memoryUsage += sizeof(STRUCTS::Node<T>); // Size of the node
+        (void)value;
+    });
+
     return memoryUsage;
 }
 
+
 int main() {
-    const int numElements = 100000;
+    const int numElements = 10000;
     const int position = numElements / 2;
 
     STRUCTS::Array<Person> array;

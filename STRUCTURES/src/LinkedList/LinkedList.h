@@ -12,7 +12,7 @@ namespace STRUCTS {
     struct Node {
         T data;
         std::unique_ptr<Node> next;
-        Node* prev;  // Pointer to the previous node
+        Node* prev;
 
         Node(T initial_data) : data(initial_data), next(nullptr), prev(nullptr) {}
     };
@@ -46,16 +46,21 @@ namespace STRUCTS {
 
         int getSize() const { return size; } // O(1)
         bool isEmpty() const { return head == nullptr; } // O(1)
-
-        const Node<T>* getHead() const { return head.get(); } // Added getHead method
+        Node<T>* getHead() const { return head.get(); }
 
     private:
         std::unique_ptr<Node<T>> head;
         Node<T>* tail;  // Pointer to the tail node
         int size;
 
+        // Cache for the last accessed node and its position
+        mutable Node<T>* cacheNode;
+        mutable int cachePosition;
+
         void clear(); // O(n)
         void copyFrom(const LinkedList& other);
+
+        Node<T>* getNodeAtPosition(int position) const;
 
         static_assert(std::is_default_constructible<T>::value, "LinkedList elements must be default-constructible");
         static_assert(std::is_copy_constructible<T>::value, "LinkedList elements must be copy-constructible");

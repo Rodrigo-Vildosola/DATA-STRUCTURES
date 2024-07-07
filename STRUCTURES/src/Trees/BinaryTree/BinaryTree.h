@@ -5,21 +5,18 @@
 #include <stdexcept>
 #include <algorithm>
 
+#include "Trees/Traversal.h"
+
 namespace STRUCTS {
 
-    enum class TraversalType {
-        Inorder,
-        Preorder,
-        Postorder
-    }; 
 
     template<typename T>
-    struct TreeNode {
+    struct BTNode {
         T data;
-        std::unique_ptr<TreeNode> left;
-        std::unique_ptr<TreeNode> right;
+        std::unique_ptr<BTNode> left;
+        std::unique_ptr<BTNode> right;
 
-        TreeNode(const T& value) : data(value), left(nullptr), right(nullptr) {}
+        BTNode(const T& value) : data(value), left(nullptr), right(nullptr) {}
     };
 
     template<typename T, typename Compare = std::less<T>>
@@ -40,18 +37,18 @@ namespace STRUCTS {
         void map(const std::function<T(T)>& func);
 
     private:
-        std::unique_ptr<TreeNode<T>> root;
+        std::unique_ptr<BTNode<T>> root;
         int tree_size;
         int tree_height;
         Compare compare;
 
-        std::unique_ptr<TreeNode<T>> insertRec(std::unique_ptr<TreeNode<T>> node, const T& value);
-        std::unique_ptr<TreeNode<T>> removeRec(std::unique_ptr<TreeNode<T>> node, const T& value);
-        bool searchRec(const TreeNode<T>* node, const T& value) const;
-        int heightRec(const TreeNode<T>* node) const;
+        std::unique_ptr<BTNode<T>> insertRec(std::unique_ptr<BTNode<T>> node, const T& value);
+        std::unique_ptr<BTNode<T>> removeRec(std::unique_ptr<BTNode<T>> node, const T& value);
+        bool searchRec(const BTNode<T>* node, const T& value) const;
+        int heightRec(const BTNode<T>* node) const;
 
-        void traverseRec(TreeNode<T>* node, const std::function<void(const T&)>& func, TraversalType type) const;
-        void mapRec(TreeNode<T>* node, const std::function<T(T)>& func);
+        void traverseRec(BTNode<T>* node, const std::function<void(const T&)>& func, TraversalType type) const;
+        void mapRec(BTNode<T>* node, const std::function<T(T)>& func);
     };
 
 }

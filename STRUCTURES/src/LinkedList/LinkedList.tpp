@@ -3,7 +3,7 @@
 namespace STRUCTS {
 
     template <typename T>
-    LinkedList<T>::LinkedList() : head(nullptr), tail(nullptr), size(0) {}
+    LinkedList<T>::LinkedList() : head(nullptr), tail(nullptr), size(0), cacheNode(nullptr), cachePosition(-1) {}
 
     template <typename T>
     LinkedList<T>::~LinkedList() {
@@ -26,8 +26,10 @@ namespace STRUCTS {
 
     template <typename T>
     LinkedList<T>::LinkedList(LinkedList&& other) noexcept
-        : head(std::move(other.head)), tail(other.tail), size(other.size) {
+        : head(std::move(other.head)), tail(other.tail), size(other.size), cacheNode(other.cacheNode), cachePosition(other.cachePosition) {
         other.tail = nullptr;
+        other.cacheNode = nullptr;
+        other.cachePosition = -1;
         other.size = 0;
     }
 
@@ -38,7 +40,11 @@ namespace STRUCTS {
             head = std::move(other.head);
             tail = other.tail;
             size = other.size;
+            cacheNode = other.cacheNode;
+            cachePosition = other.cachePosition;
             other.tail = nullptr;
+            other.cacheNode = nullptr;
+            other.cachePosition = -1;
             other.size = 0;
         }
         return *this;
@@ -49,6 +55,9 @@ namespace STRUCTS {
         while (head != nullptr) {
             deleteFromBeginning();
         }
+        tail = nullptr;
+        cacheNode = nullptr;
+        cachePosition = -1;
     }
 
     template <typename T>
@@ -59,24 +68,28 @@ namespace STRUCTS {
             newNode->next->prev = newNode.get();
         }
         head = std::move(newNode);
-        if (tail == nullptr) {
+        if (!tail) {
             tail = head.get();
         }
         ++size;
+        cacheNode = head.get();
+        cachePosition = 0;
     }
 
     template <typename T>
     void LinkedList<T>::insertAtEnd(const T& value) {
         std::unique_ptr<Node<T>> newNode = std::make_unique<Node<T>>(value);
-        newNode->prev = tail;
         if (tail) {
             tail->next = std::move(newNode);
+            tail->next->prev = tail;
             tail = tail->next.get();
         } else {
             head = std::move(newNode);
             tail = head.get();
         }
         ++size;
+        cacheNode = tail;
+        cachePosition = size - 1;
     }
 
     template <typename T>
@@ -89,11 +102,8 @@ namespace STRUCTS {
         } else if (position == size) {
             insertAtEnd(value);
         } else {
+            Node<T>* temp = getNodeAtPosition(position - 1);
             std::unique_ptr<Node<T>> newNode = std::make_unique<Node<T>>(value);
-            Node<T>* temp = head.get();
-            for (int i = 1; i < position; ++i) {
-                temp = temp->next.get();
-            }
             newNode->next = std::move(temp->next);
             if (newNode->next) {
                 newNode->next->prev = newNode.get();
@@ -101,6 +111,8 @@ namespace STRUCTS {
             temp->next = std::move(newNode);
             temp->next->prev = temp;
             ++size;
+            cacheNode = temp->next.get();
+            cachePosition = position;
         }
     }
 
@@ -116,6 +128,8 @@ namespace STRUCTS {
             tail = nullptr;
         }
         --size;
+        cacheNode = head.get();
+        cachePosition = 0;
     }
 
     template <typename T>
@@ -125,12 +139,14 @@ namespace STRUCTS {
         }
         if (tail->prev) {
             tail = tail->prev;
-            tail->next.reset();
+            tail->next = nullptr;
         } else {
-            head.reset();
+            head = nullptr;
             tail = nullptr;
         }
         --size;
+        cacheNode = tail;
+        cachePosition = size - 1;
     }
 
     template <typename T>
@@ -143,15 +159,14 @@ namespace STRUCTS {
         } else if (position == size - 1) {
             deleteFromEnd();
         } else {
-            Node<T>* temp = head.get();
-            for (int i = 0; i < position; ++i) {
-                temp = temp->next.get();
-            }
+            Node<T>* temp = getNodeAtPosition(position - 1);
             temp->next = std::move(temp->next->next);
             if (temp->next) {
                 temp->next->prev = temp;
             }
             --size;
+            cacheNode = temp;
+            cachePosition = position - 1;
         }
     }
 
@@ -190,10 +205,7 @@ namespace STRUCTS {
         if (position < 0 || position >= size) {
             throw std::out_of_range("Update Error: Position out of bounds.");
         }
-        Node<T>* temp = head.get();
-        for (int i = 0; i < position; ++i) {
-            temp = temp->next.get();
-        }
+        Node<T>* temp = getNodeAtPosition(position);
         temp->data = value;
     }
 
@@ -206,4 +218,40 @@ namespace STRUCTS {
         }
     }
 
-} // namespace STRUCTS
+    template <typename T>
+    Node<T>* LinkedList<T>::getNodeAtPosition(int position) const {
+        if (position < 0 || position >= size) {
+            throw std::out_of_range("Position out of bounds.");
+        }
+
+        if (cacheNode && std::abs(cachePosition - position) <= position && std::abs(cachePosition - position) <= (size - position)) {
+            // Use cache to optimize the search
+            if (cachePosition <= position) {
+                Node<T>* temp = cacheNode;
+                for (int i = cachePosition; i < position; ++i) {
+                    temp = temp->next.get();
+                }
+                cacheNode = temp;
+                cachePosition = position;
+                return temp;
+            } else {
+                Node<T>* temp = cacheNode;
+                for (int i = cachePosition; i > position; --i) {
+                    temp = temp->prev;
+                }
+                cacheNode = temp;
+                cachePosition = position;
+                return temp;
+            }
+        } else {
+            // Normal search
+            Node<T>* temp = head.get();
+            for (int i = 0; i < position; ++i) {
+                temp = temp->next.get();
+            }
+            cacheNode = temp;
+            cachePosition = position;
+            return temp;
+        }
+    }
+}
