@@ -3,7 +3,7 @@
 namespace STRUCTS {
 
     template <typename T>
-    LinkedList<T>::LinkedList() : head(nullptr), size(0) {}
+    LinkedList<T>::LinkedList() : head(nullptr), tail(nullptr), size(0) {}
 
     template <typename T>
     LinkedList<T>::~LinkedList() {
@@ -26,7 +26,8 @@ namespace STRUCTS {
 
     template <typename T>
     LinkedList<T>::LinkedList(LinkedList&& other) noexcept
-        : head(std::move(other.head)), size(other.size) {
+        : head(std::move(other.head)), tail(other.tail), size(other.size) {
+        other.tail = nullptr;
         other.size = 0;
     }
 
@@ -35,7 +36,9 @@ namespace STRUCTS {
         if (this != &other) {
             clear();
             head = std::move(other.head);
+            tail = other.tail;
             size = other.size;
+            other.tail = nullptr;
             other.size = 0;
         }
         return *this;
@@ -52,21 +55,26 @@ namespace STRUCTS {
     void LinkedList<T>::insertAtBeginning(const T& value) {
         std::unique_ptr<Node<T>> newNode = std::make_unique<Node<T>>(value);
         newNode->next = std::move(head);
+        if (newNode->next) {
+            newNode->next->prev = newNode.get();
+        }
         head = std::move(newNode);
+        if (tail == nullptr) {
+            tail = head.get();
+        }
         ++size;
     }
 
     template <typename T>
     void LinkedList<T>::insertAtEnd(const T& value) {
         std::unique_ptr<Node<T>> newNode = std::make_unique<Node<T>>(value);
-        if (head == nullptr) {
-            head = std::move(newNode);
+        newNode->prev = tail;
+        if (tail) {
+            tail->next = std::move(newNode);
+            tail = tail->next.get();
         } else {
-            Node<T>* temp = head.get();
-            while (temp->next != nullptr) {
-                temp = temp->next.get();
-            }
-            temp->next = std::move(newNode);
+            head = std::move(newNode);
+            tail = head.get();
         }
         ++size;
     }
@@ -78,6 +86,8 @@ namespace STRUCTS {
         }
         if (position == 0) {
             insertAtBeginning(value);
+        } else if (position == size) {
+            insertAtEnd(value);
         } else {
             std::unique_ptr<Node<T>> newNode = std::make_unique<Node<T>>(value);
             Node<T>* temp = head.get();
@@ -85,7 +95,11 @@ namespace STRUCTS {
                 temp = temp->next.get();
             }
             newNode->next = std::move(temp->next);
+            if (newNode->next) {
+                newNode->next->prev = newNode.get();
+            }
             temp->next = std::move(newNode);
+            temp->next->prev = temp;
             ++size;
         }
     }
@@ -96,22 +110,25 @@ namespace STRUCTS {
             throw std::out_of_range("Delete Error: List is empty.");
         }
         head = std::move(head->next);
+        if (head) {
+            head->prev = nullptr;
+        } else {
+            tail = nullptr;
+        }
         --size;
     }
 
     template <typename T>
     void LinkedList<T>::deleteFromEnd() {
-        if (head == nullptr) {
+        if (tail == nullptr) {
             throw std::out_of_range("Delete Error: List is empty.");
         }
-        if (head->next == nullptr) {
-            head = nullptr;
+        if (tail->prev) {
+            tail = tail->prev;
+            tail->next.reset();
         } else {
-            Node<T>* temp = head.get();
-            while (temp->next->next != nullptr) {
-                temp = temp->next.get();
-            }
-            temp->next = nullptr;
+            head.reset();
+            tail = nullptr;
         }
         --size;
     }
@@ -123,12 +140,17 @@ namespace STRUCTS {
         }
         if (position == 0) {
             deleteFromBeginning();
+        } else if (position == size - 1) {
+            deleteFromEnd();
         } else {
             Node<T>* temp = head.get();
-            for (int i = 1; i < position; ++i) {
+            for (int i = 0; i < position; ++i) {
                 temp = temp->next.get();
             }
             temp->next = std::move(temp->next->next);
+            if (temp->next) {
+                temp->next->prev = temp;
+            }
             --size;
         }
     }
@@ -184,4 +206,4 @@ namespace STRUCTS {
         }
     }
 
-}
+} // namespace STRUCTS

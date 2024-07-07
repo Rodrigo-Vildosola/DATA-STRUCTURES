@@ -12,8 +12,9 @@ namespace STRUCTS {
     struct Node {
         T data;
         std::unique_ptr<Node> next;
+        Node* prev;  // Pointer to the previous node
 
-        Node(T initial_data) : data(initial_data), next(nullptr) {}
+        Node(T initial_data) : data(initial_data), next(nullptr), prev(nullptr) {}
     };
 
     template <typename T>
@@ -28,11 +29,14 @@ namespace STRUCTS {
         LinkedList& operator=(LinkedList&& other) noexcept;
 
         void insertAtBeginning(const T& value); // O(1)
-        void insertAtEnd(const T& value); // O(n)
+        void insertAtEnd(const T& value); // O(1) with tail pointer
         void insertAtPosition(int position, const T& value); // O(n)
 
+        void append(const T& value) { insertAtEnd(value); }
+        void insert(int position, const T& value) { insertAtPosition(position, value); }
+
         void deleteFromBeginning(); // O(1)
-        void deleteFromEnd(); // O(n)
+        void deleteFromEnd(); // O(1) with tail pointer
         void deleteFromPosition(int position); // O(n)
 
         void traverse(const std::function<void(const T&)>& func) const; // O(n)
@@ -43,8 +47,11 @@ namespace STRUCTS {
         int getSize() const { return size; } // O(1)
         bool isEmpty() const { return head == nullptr; } // O(1)
 
+        const Node<T>* getHead() const { return head.get(); } // Added getHead method
+
     private:
         std::unique_ptr<Node<T>> head;
+        Node<T>* tail;  // Pointer to the tail node
         int size;
 
         void clear(); // O(n)
