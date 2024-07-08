@@ -1,23 +1,14 @@
 #include <gtest/gtest.h>
 #include <Structs.h>
 #include <string>
-
-// Custom data type
-struct Person {
-    std::string name;
-    int age;
-
-    bool operator==(const Person& other) const {
-        return name == other.name && age == other.age;
-    }
-};
+#include <DTypes.h>
 
 // Hash specialization for custom data type
 namespace std {
     template <>
     struct hash<Person> {
         std::size_t operator()(const Person& p) const {
-            return hash<std::string>()(p.name) ^ hash<int>()(p.age);
+            return hash<std::string>()(p.name) ^ (hash<int>()(p.age) << 1);
         }
     };
 }

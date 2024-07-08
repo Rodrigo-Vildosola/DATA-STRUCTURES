@@ -37,12 +37,12 @@ namespace STRUCTS {
 
     template <typename KeyType, typename ValueType, typename Hash>
     void HashTable<KeyType, ValueType, Hash>::insert(const KeyType& key, const ValueType& value) {
-        if (size >= static_cast<size_t>(capacity * 0.75)) {
+        if (size >= capacity * 0.75) {
             resize(capacity * 2);
         }
 
         size_t index = hashFunction(key);
-        auto& node = table[index];
+        auto* node = table[index].get();
         while (node) {
             if (node->key == key) {
                 node->value = value;
@@ -60,11 +60,11 @@ namespace STRUCTS {
     template <typename KeyType, typename ValueType, typename Hash>
     void HashTable<KeyType, ValueType, Hash>::remove(const KeyType& key) {
         size_t index = hashFunction(key);
-        auto& node = table[index];
-        std::unique_ptr<HashNode<KeyType, ValueType>>* prev = &node;
+        auto* node = table[index].get();
+        HashNode<KeyType, ValueType>* prev = nullptr;
 
         while (node && node->key != key) {
-            prev = &node->next;
+            prev = node;
             node = node->next.get();
         }
 
@@ -72,19 +72,24 @@ namespace STRUCTS {
             throw std::runtime_error("Key not found");
         }
 
-        *prev = std::move(node->next);
+        if (prev) {
+            prev->next = std::move(node->next);
+        } else {
+            table[index] = std::move(node->next);
+        }
         --size;
     }
 
     template <typename KeyType, typename ValueType, typename Hash>
     ValueType HashTable<KeyType, ValueType, Hash>::search(const KeyType& key) const {
         size_t index = hashFunction(key);
-        const auto& node = table[index];
+        auto* node = table[index].get();
 
-        for (auto* n = node.get(); n != nullptr; n = n->next.get()) {
-            if (n->key == key) {
-                return n->value;
+        while (node) {
+            if (node->key == key) {
+                return node->value;
             }
+            node = node->next.get();
         }
 
         throw std::runtime_error("Key not found");
@@ -93,12 +98,13 @@ namespace STRUCTS {
     template <typename KeyType, typename ValueType, typename Hash>
     bool HashTable<KeyType, ValueType, Hash>::contains(const KeyType& key) const {
         size_t index = hashFunction(key);
-        const auto& node = table[index];
+        auto* node = table[index].get();
 
-        for (auto* n = node.get(); n != nullptr; n = n->next.get()) {
-            if (n->key == key) {
+        while (node) {
+            if (node->key == key) {
                 return true;
             }
+            node = node->next.get();
         }
 
         return false;
@@ -107,7 +113,7 @@ namespace STRUCTS {
     template <typename KeyType, typename ValueType, typename Hash>
     ValueType& HashTable<KeyType, ValueType, Hash>::operator[](const KeyType& key) {
         size_t index = hashFunction(key);
-        auto& node = table[index];
+        auto* node = table[index].get();
         while (node) {
             if (node->key == key) {
                 return node->value;
@@ -125,18 +131,16 @@ namespace STRUCTS {
             return false;
         }
         for (size_t i = 0; i < capacity; ++i) {
-            const auto& node1 = table[i];
-            const auto& node2 = other.table[i];
-            auto* n1 = node1.get();
-            auto* n2 = node2.get();
-            while (n1 && n2) {
-                if (n1->key != n2->key || n1->value != n2->value) {
+            const auto* node1 = table[i].get();
+            const auto* node2 = other.table[i].get();
+            while (node1 && node2) {
+                if (node1->key != node2->key || node1->value != node2->value) {
                     return false;
                 }
-                n1 = n1->next.get();
-                n2 = n2->next.get();
+                node1 = node1->next.get();
+                node2 = node2->next.get();
             }
-            if (n1 || n2) {
+            if (node1 || node2) {
                 return false;
             }
         }

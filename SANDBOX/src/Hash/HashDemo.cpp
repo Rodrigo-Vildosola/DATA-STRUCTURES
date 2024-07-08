@@ -1,16 +1,8 @@
 #include <iostream>
 #include <Structs.h>
 #include <string>
+#include <DTypes.h>
 
-// Custom data type
-struct Person {
-    std::string name;
-    int age;
-
-    bool operator==(const Person& other) const {
-        return name == other.name && age == other.age;
-    }
-};
 
 // Hash specialization for custom data type
 namespace std {
