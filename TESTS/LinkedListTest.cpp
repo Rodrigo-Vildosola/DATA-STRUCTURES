@@ -196,7 +196,7 @@ TEST(LinkedListTest, MapString) {
     list.insertAtEnd("Hello");
     list.insertAtEnd("World");
 
-    list.map([](std::string value) { return value + "!!!"; });
+    list.map([](const std::string& value) { return value + "!!!"; });
 
     std::vector<std::string> values;
     list.traverse([&values](const std::string& value) {
