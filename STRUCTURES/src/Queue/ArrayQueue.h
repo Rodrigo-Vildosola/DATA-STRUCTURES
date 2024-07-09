@@ -1,9 +1,12 @@
-#include <iostream>
+#pragma once
+
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 
 namespace STRUCTS {
 
+    template <typename T>
     class ArrayQueue {
     public:
         ArrayQueue(int initial_capacity = 10);
@@ -18,15 +21,15 @@ namespace STRUCTS {
         bool operator==(const ArrayQueue& other) const;
         bool operator!=(const ArrayQueue& other) const;
 
-        // Stream insertion operator
-        friend std::ostream& operator<<(std::ostream& os, const ArrayQueue& queue);
-
-        void enqueue(int value);
-        int dequeue();
-        int front() const;
+        void enqueue(const T& value);
+        void dequeue();
+        T front() const;
         bool isEmpty() const;
-        bool isFull() const;
         int getSize() const;
+        void clear();
+
+        template <typename U>
+        friend std::ostream& operator<<(std::ostream& os, const ArrayQueue<U>& queue);
 
     private:
         void resize(int new_capacity);
@@ -35,8 +38,9 @@ namespace STRUCTS {
         int capacity;
         int frontIndex;
         int rearIndex;
-        std::unique_ptr<int[]> data;
+        std::unique_ptr<T[]> data;
     };
 
-    // Implementations...
-}
+} // namespace STRUCTS
+
+#include "Queue/ArrayQueue.tpp"

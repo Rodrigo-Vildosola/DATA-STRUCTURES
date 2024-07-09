@@ -38,7 +38,7 @@ endif()
 
 # Add the external directories
 add_subdirectory(external/googletest)
-add_subdirectory(STRUCTURES)
+# add_subdirectory(STRUCTURES)
 add_subdirectory(SANDBOX)
 add_subdirectory(TESTS)
 

@@ -6,13 +6,15 @@
 
 namespace STRUCTS {
 
+    template <typename T>
     struct QueueNode {
-        int data;
-        std::unique_ptr<QueueNode> next;
+        T data;
+        std::unique_ptr<QueueNode<T>> next;
 
-        QueueNode(int initial_data) : data(initial_data), next(nullptr) {}
+        QueueNode(const T& initial_data) : data(initial_data), next(nullptr) {}
     };
 
+    template <typename T>
     class LinkedListQueue {
     public:
         LinkedListQueue();
@@ -27,17 +29,19 @@ namespace STRUCTS {
         bool operator==(const LinkedListQueue& other) const;
         bool operator!=(const LinkedListQueue& other) const;
 
-        friend std::ostream& operator<<(std::ostream& os, const LinkedListQueue& queue);
-
-        void enqueue(int value);
-        int dequeue();
-        int front() const;
+        void enqueue(const T& value);
+        void dequeue();
+        T front() const;
         bool isEmpty() const;
         int getSize() const;
+        void clear();
+
+        template <typename U>
+        friend std::ostream& operator<<(std::ostream& os, const LinkedListQueue<U>& queue);
 
     private:
-        std::unique_ptr<QueueNode> head;
-        QueueNode* tail;
+        std::unique_ptr<QueueNode<T>> head;
+        QueueNode<T>* tail;
         int size;
 
         void copyFrom(const LinkedListQueue& other);
@@ -45,3 +49,5 @@ namespace STRUCTS {
     };
 
 }
+
+#include "Queue/LinkedListQueue.tpp"
