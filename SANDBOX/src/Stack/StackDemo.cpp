@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <string>
+#include <DTypes.h>
 #include <Structs.h>
 
 
@@ -7,30 +8,6 @@ namespace STRUCTS {
 
 }
 
-#include <iostream>
-#include <string>
-
-class Person {
-public:
-    std::string name;
-    int age;
-
-    Person() : name(""), age(0) {}
-    Person(std::string name, int age) : name(name), age(age) {}
-
-    bool operator==(const Person& other) const {
-        return name == other.name && age == other.age;
-    }
-
-    bool operator!=(const Person& other) const {
-        return !(*this == other);
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const Person& person) {
-        os << person.name << " (" << person.age << ")";
-        return os;
-    }
-};
 
 
 
