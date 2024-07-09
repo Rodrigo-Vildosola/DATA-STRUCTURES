@@ -37,7 +37,7 @@ namespace STRUCTS {
 
     template <typename KeyType, typename ValueType, typename Hash>
     void HashTable<KeyType, ValueType, Hash>::insert(const KeyType& key, const ValueType& value) {
-        if (size >= static_cast<size_t>(capacity * 0.75)) {
+        if (size >= static_cast<size_t>(static_cast<double>(capacity) * 0.75)) {
             resize(capacity * 2);
         }
 
