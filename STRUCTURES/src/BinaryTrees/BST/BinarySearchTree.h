@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <type_traits>
 
-#include "Trees/Traversal.h"
+#include "BinaryTrees/Traversal.h"
 
 namespace STRUCTS {
 
@@ -55,4 +55,4 @@ namespace STRUCTS {
 
 }
 
-#include "Trees/BST/BinarySearchTree.tpp"
+#include "BinaryTrees/BST/BinarySearchTree.tpp"

@@ -1,4 +1,4 @@
-#include "Trees/BST/BinarySearchTree.h"
+#include "BinaryTrees/BST/BinarySearchTree.h"
 
 namespace STRUCTS {
 

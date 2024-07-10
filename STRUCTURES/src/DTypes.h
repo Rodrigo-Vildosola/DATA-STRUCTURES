@@ -20,6 +20,10 @@ struct Person {
     bool operator<(const Person& other) const {
         return name < other.name || (name == other.name && age < other.age);
     }
+
+    bool operator>(const Person& other) const {
+        return name > other.name || (name == other.name && age > other.age);
+    }
 };
 
 std::ostream& operator<<(std::ostream& os, const Person& person) {

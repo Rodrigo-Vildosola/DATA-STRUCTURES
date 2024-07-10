@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <type_traits>
 
-#include "Trees/Traversal.h"
+#include "BinaryTrees/Traversal.h"
 
 namespace STRUCTS {
 
@@ -68,4 +68,4 @@ namespace STRUCTS {
 
 }
 
-#include "Trees/AVL/AVLTree.tpp"
+#include "BinaryTrees/AVL/AVLTree.tpp"

@@ -1,4 +1,4 @@
-#include "Trees/AVL/AVLTree.h"
+#include "BinaryTrees/AVL/AVLTree.h"
 
 namespace STRUCTS {
 

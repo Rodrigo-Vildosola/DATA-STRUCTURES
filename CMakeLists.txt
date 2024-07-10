@@ -20,7 +20,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Common compiler warnings
-set(COMMON_WARNINGS "-Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wsign-conversion -Wnull-dereference")
+set(COMMON_WARNINGS "-Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual  -Wnull-dereference")
 
 # Add different compiler flags for different build types
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 ${COMMON_WARNINGS} -Werror")
