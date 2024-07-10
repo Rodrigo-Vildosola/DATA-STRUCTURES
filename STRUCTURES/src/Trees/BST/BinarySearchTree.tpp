@@ -83,7 +83,7 @@ namespace STRUCTS {
     }
 
     template<typename T, typename Compare>
-    int BinarySearchTree<T, Compare>::height() const {
+    int BinarySearchTree<T, Compare>::getHeight() const {
         return heightRec(root.get());
     }
 

@@ -30,11 +30,14 @@ namespace STRUCTS {
         void remove(const T& value);
         bool search(const T& value) const;
 
-        int height() const;
-        int size() const { return tree_size; }
+        int getHeight() const;
+        int getSize() const { return tree_size; }
 
         void traverse(const std::function<void(const T&)>& func, TraversalType type = TraversalType::Inorder) const;
         void map(const std::function<T(T)>& func);
+
+        const std::unique_ptr<BSTNode<T>>& getRoot() const { return root; }
+
 
     private:
         std::unique_ptr<BSTNode<T>> root;

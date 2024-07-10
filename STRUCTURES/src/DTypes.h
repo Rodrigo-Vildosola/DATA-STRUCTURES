@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <string>
 
@@ -14,6 +15,10 @@ struct Person {
 
     bool operator!=(const Person& other) const {
         return !(*this == other);
+    }
+
+    bool operator<(const Person& other) const {
+        return name < other.name || (name == other.name && age < other.age);
     }
 };
 

@@ -11,6 +11,7 @@
 
 #include "Hash/HashTable.h"
 
-#include "Trees/BinaryTree/BinaryTree.h"
+#include "Trees/AVL/AVLTree.h"
+#include "Trees/BST/BinarySearchTree.h"
 #include "Trees/GeneralTree/GeneralTree.h"
 
