@@ -74,54 +74,6 @@ void testAVLTree(STRUCTS::AVLTree<T>& avl, const std::vector<T>& values) {
     std::cout << std::endl;
 }
 
-template <>
-void testAVLTree<std::string>(STRUCTS::AVLTree<std::string>& avl, const std::vector<std::string>& values) {
-    // Insert values
-    for (const auto& value : values) {
-        avl.insert(value);
-    }
-
-    // Print traversals
-    std::cout << "In-order traversal: ";
-    avl.traverse(printStringNode, STRUCTS::TraversalType::Inorder);
-    std::cout << std::endl;
-
-    std::cout << "Pre-order traversal: ";
-    avl.traverse(printStringNode, STRUCTS::TraversalType::Preorder);
-    std::cout << std::endl;
-
-    std::cout << "Post-order traversal: ";
-    avl.traverse(printStringNode, STRUCTS::TraversalType::Postorder);
-    std::cout << std::endl;
-
-    // Search for values
-    std::cout << "Search " << values[0] << ": " << (avl.search(values[0]) ? "Found" : "Not Found") << std::endl;
-    std::cout << "Search " << values[1] << ": " << (avl.search(values[1]) ? "Found" : "Not Found") << std::endl;
-    std::cout << "Search 'Unknown': " << (avl.search("Unknown") ? "Found" : "Not Found") << std::endl;
-
-    // Tree height
-    std::cout << "Tree height: " << avl.getHeight() << std::endl;
-
-    // Remove values
-    avl.remove(values[1]);
-    std::cout << "In-order traversal after removing " << values[1] << ": ";
-    avl.traverse(printStringNode, STRUCTS::TraversalType::Inorder);
-    std::cout << std::endl;
-
-    avl.remove(values[0]);
-    std::cout << "In-order traversal after removing " << values[0] << ": ";
-    avl.traverse(printStringNode, STRUCTS::TraversalType::Inorder);
-    std::cout << std::endl;
-
-    // Traverse with a custom function
-    std::cout << "Traverse with a custom function (append '_test'): ";
-    avl.map([](std::string value) { return value + "_test"; });
-    std::cout << std::endl;
-
-    std::cout << "In-order traversal after appending '_test': ";
-    avl.traverse(printStringNode, STRUCTS::TraversalType::Inorder);
-    std::cout << std::endl;
-}
 
 template <>
 void testAVLTree<Person>(STRUCTS::AVLTree<Person>& avl, const std::vector<Person>& values) {

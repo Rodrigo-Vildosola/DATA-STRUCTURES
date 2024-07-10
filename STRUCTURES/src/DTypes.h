@@ -26,3 +26,7 @@ std::ostream& operator<<(std::ostream& os, const Person& person) {
     os << person.name << " (" << person.age << ")";
     return os;
 }
+
+std::string to_string(const Person& person) {
+    return person.name + " (" + std::to_string(person.age) + ")";
+}

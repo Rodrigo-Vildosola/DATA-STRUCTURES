@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <vector>
 #include <sstream>
+#include <iostream>
+#include <iomanip>
 
 namespace STRUCTS {
 
@@ -12,7 +14,7 @@ namespace STRUCTS {
         Inorder,
         Preorder,
         Postorder
-    }; 
+    };
 
     template <typename T, typename Tree>
     void prettyPrintTree(const Tree& tree, TraversalType type = TraversalType::Inorder) {
@@ -36,39 +38,55 @@ namespace STRUCTS {
         std::cout << std::endl;
     }
 
-    // Function to print tree structure level by level
     template <typename Node>
-    void printLevel(std::vector<std::vector<std::string>>& levels, const std::unique_ptr<Node>& node, int level, int maxDepth) {
-        if (!node) {
-            if (level < maxDepth) {
-                levels[static_cast<std::size_t>(level)].push_back(" ");
-                printLevel(levels, node, level + 1, maxDepth);
-                printLevel(levels, node, level + 1, maxDepth);
-            }
-            return;
+    void collectLevels(std::vector<std::string>& levels, const std::unique_ptr<Node>& node, int level, size_t maxNodeWidth) {
+        if (static_cast<size_t>(level) == levels.size()) {
+            levels.push_back("");
         }
 
-        std::stringstream ss;
-        ss << node->data;
-        levels[static_cast<std::size_t>(level)].push_back(ss.str());
-
-        printLevel(levels, node->left, level + 1, maxDepth);
-        printLevel(levels, node->right, level + 1, maxDepth);
+        if (node) {
+            std::stringstream ss;
+            ss << to_string(node->data);
+            std::string nodeStr = ss.str();
+            levels[static_cast<size_t>(level)] += nodeStr + " ";
+            collectLevels(levels, node->left, level + 1, maxNodeWidth);
+            collectLevels(levels, node->right, level + 1, maxNodeWidth);
+        } else {
+            // Add spaces for a missing node
+            std::string spaces(maxNodeWidth, ' ');
+            levels[static_cast<size_t>(level)] += spaces + " ";
+        }
     }
 
     template <typename Tree>
     void printTreeStructure(const Tree& tree) {
         using NodeType = typename std::remove_reference<decltype(*tree.getRoot())>::type;
-        int maxDepth = tree.getHeight();
-        std::vector<std::vector<std::string>> levels(static_cast<std::size_t>(maxDepth + 1));
+        std::vector<std::string> levels;
 
-        printLevel<NodeType>(levels, tree.getRoot(), 0, maxDepth);
+        // Find the maximum width of any node's string representation
+        size_t maxNodeWidth = 0;
+        tree.traverse([&maxNodeWidth](const auto& value) {
+            std::stringstream ss;
+            ss << to_string(value);
+            maxNodeWidth = std::max(maxNodeWidth, ss.str().size());
+        }, STRUCTS::TraversalType::Inorder);
 
+        collectLevels<NodeType>(levels, tree.getRoot(), 0, maxNodeWidth);
+
+        // Calculate the maximum width needed for the bottom level
+        // size_t maxWidth = levels.back().size();
+
+        // Pad each level to the maximum width
+        // for (auto& level : levels) {
+        //     while (level.size() < maxWidth) {
+        //         level = " " + level + " ";
+        //     }
+        // }
+
+        // Print each level with appropriate spacing
         for (const auto& level : levels) {
-            for (const auto& node : level) {
-                std::cout << node << " ";
-            }
-            std::cout << std::endl;
+            std::cout << level << std::endl;
         }
     }
+
 }

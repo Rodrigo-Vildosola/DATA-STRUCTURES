@@ -55,7 +55,7 @@ size_t calculateMemoryUsage(const STRUCTS::AVLTree<T>& tree) {
 }
 
 void testAVLTree() {
-    const int numElements = 10;
+    const int numElements = 20;
     STRUCTS::AVLTree<Person> avlTree;
 
     std::cout << "Benchmarking AVL Tree" << std::endl;
