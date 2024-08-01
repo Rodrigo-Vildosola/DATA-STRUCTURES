@@ -3,38 +3,12 @@
 namespace STRUCTS {
 
     template<typename T>
-    Heap<T>::Heap(HeapType type) : root(nullptr), size(0), heapType(type) {}
-
-    template<typename T>
-    Heap<T>::~Heap() {
-        // unique_ptr automatically handles memory deallocation
-    }
+    Heap<T>::Heap(HeapType type) : heapType(type) {}
 
     template<typename T>
     void Heap<T>::insert(const T& value) {
-        root = insertRec(std::move(root), value);
-        size++;
-        heapifyUp(root);
-    }
-
-    template<typename T>
-    std::unique_ptr<HeapNode<T>> Heap<T>::insertRec(std::unique_ptr<HeapNode<T>> node, const T& value) {
-        if (!node) {
-            return std::make_unique<HeapNode<T>>(value);
-        }
-        if (compare(value, node->data)) {
-            swap(node->data, value);
-        }
-        if (!node->left) {
-            node->left = insertRec(std::move(node->left), value);
-        } else if (!node->right) {
-            node->right = insertRec(std::move(node->right), value);
-        } else if (node->left->right) {
-            node->left = insertRec(std::move(node->left), value);
-        } else {
-            node->right = insertRec(std::move(node->right), value);
-        }
-        return node;
+        data.append(value);
+        heapifyUp(data.getSize() - 1);
     }
 
     template<typename T>
@@ -42,52 +16,13 @@ namespace STRUCTS {
         if (isEmpty()) {
             throw std::runtime_error("Heap is empty");
         }
-        T extractedValue = root->data;
-        root = extractRec(root, extractedValue);
-        size--;
+        T extractedValue = data[0];
+        data[0] = data[data.getSize() - 1];
+        data.remove(data.getSize() - 1);
         if (!isEmpty()) {
-            heapifyDown(root);
+            heapifyDown(0);
         }
         return extractedValue;
-    }
-
-    template<typename T>
-    std::unique_ptr<HeapNode<T>> Heap<T>::extractRec(std::unique_ptr<HeapNode<T>>& node, T& extractedValue) {
-        if (!node->left && !node->right) {
-            return nullptr;
-        }
-        if (node->left && (!node->right || compare(node->left->data, node->right->data))) {
-            node->data = node->left->data;
-            node->left = extractRec(node->left, extractedValue);
-        } else {
-            node->data = node->right->data;
-            node->right = extractRec(node->right, extractedValue);
-        }
-        return node;
-    }
-
-    template<typename T>
-    void Heap<T>::heapifyDown(std::unique_ptr<HeapNode<T>>& node) {
-        if (!node->left && !node->right) {
-            return;
-        }
-        std::unique_ptr<HeapNode<T>>& child = (node->left && (!node->right || compare(node->left->data, node->right->data))) ? node->left : node->right;
-        if (compare(child->data, node->data)) {
-            swap(node->data, child->data);
-            heapifyDown(child);
-        }
-    }
-
-    template<typename T>
-    void Heap<T>::heapifyUp(std::unique_ptr<HeapNode<T>>& node) {
-        if (!node || (!node->left && !node->right)) {
-            return;
-        }
-        std::unique_ptr<HeapNode<T>>& child = (node->left && (!node->right || compare(node->left->data, node->right->data))) ? node->left : node->right;
-        if (compare(child->data, node->data)) {
-            swap(node->data, child->data);
-            heapifyUp(child);
-        }
     }
 
     template<typename T>
@@ -95,7 +30,43 @@ namespace STRUCTS {
         if (isEmpty()) {
             throw std::runtime_error("Heap is empty");
         }
-        return root->data;
+        return data[0];
+    }
+
+    template<typename T>
+    void Heap<T>::heapifyUp(int index) {
+        while (index > 0) {
+            int parentIndex = (index - 1) / 2;
+            if (compare(data[index], data[parentIndex])) {
+                std::swap(data[index], data[parentIndex]);
+                index = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    template<typename T>
+    void Heap<T>::heapifyDown(int index) {
+        int size = data.getSize();
+        while (true) {
+            int leftIndex = 2 * index + 1;
+            int rightIndex = 2 * index + 2;
+            int smallestOrLargest = index;
+
+            if (leftIndex < size && compare(data[leftIndex], data[smallestOrLargest])) {
+                smallestOrLargest = leftIndex;
+            }
+            if (rightIndex < size && compare(data[rightIndex], data[smallestOrLargest])) {
+                smallestOrLargest = rightIndex;
+            }
+            if (smallestOrLargest != index) {
+                std::swap(data[index], data[smallestOrLargest]);
+                index = smallestOrLargest;
+            } else {
+                break;
+            }
+        }
     }
 
     template<typename T>

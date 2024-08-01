@@ -112,7 +112,7 @@ void testBinarySearchTree(const std::vector<Person>& persons) {
 }
 
 int main() {
-    const int numElements = 20000;
+    const int numElements = 200000;
 
     std::vector<Person> persons = generateRandomPersons(numElements);
 

@@ -82,6 +82,85 @@ void testPersonHeap() {
     printPersonHeap(maxHeap);
 }
 
+void priorityQueueExample() {
+    std::cout << "Priority Queue Example with Heap<int>..." << std::endl;
+    STRUCTS::Heap<int> maxHeap(STRUCTS::HeapType::MaxHeap);
+
+    maxHeap.insert(10);
+    maxHeap.insert(20);
+    maxHeap.insert(5);
+    maxHeap.insert(30);
+    maxHeap.insert(15);
+
+    std::cout << "Max Priority Queue elements: ";
+    while (!maxHeap.isEmpty()) {
+        std::cout << maxHeap.extract() << " ";
+    }
+    std::cout << std::endl;
+}
+
+void heapSortExample() {
+    std::cout << "Heap Sort Example with Heap<int>..." << std::endl;
+    std::vector<int> values = {10, 20, 5, 3, 7, 15, 25};
+
+    STRUCTS::Heap<int> minHeap(STRUCTS::HeapType::MinHeap);
+    for (const auto& value : values) {
+        minHeap.insert(value);
+    }
+
+    std::cout << "Sorted elements using Min-Heap: ";
+    while (!minHeap.isEmpty()) {
+        std::cout << minHeap.extract() << " ";
+    }
+    std::cout << std::endl;
+
+    STRUCTS::Heap<int> maxHeap(STRUCTS::HeapType::MaxHeap);
+    for (const auto& value : values) {
+        maxHeap.insert(value);
+    }
+
+    std::cout << "Sorted elements using Max-Heap: ";
+    while (!maxHeap.isEmpty()) {
+        std::cout << maxHeap.extract() << " ";
+    }
+    std::cout << std::endl;
+}
+
+void medianMaintenanceExample() {
+    std::cout << "Median Maintenance Example with Heaps..." << std::endl;
+    STRUCTS::Heap<int> maxHeap(STRUCTS::HeapType::MaxHeap); // Max-heap for the lower half
+    STRUCTS::Heap<int> minHeap(STRUCTS::HeapType::MinHeap); // Min-heap for the upper half
+
+    auto insertNumber = [&](int num) {
+        if (maxHeap.isEmpty() || num <= maxHeap.top()) {
+            maxHeap.insert(num);
+        } else {
+            minHeap.insert(num);
+        }
+
+        if (maxHeap.getSize() > minHeap.getSize() + 1) {
+            minHeap.insert(maxHeap.extract());
+        } else if (minHeap.getSize() > maxHeap.getSize()) {
+            maxHeap.insert(minHeap.extract());
+        }
+    };
+
+    auto getMedian = [&]() -> double {
+        if (maxHeap.getSize() > minHeap.getSize()) {
+            return maxHeap.top();
+        } else {
+            return (maxHeap.top() + minHeap.top()) / 2.0;
+        }
+    };
+
+    std::vector<int> numbers = {5, 15, 1, 3, 8, 7, 9, 10};
+    for (const auto& num : numbers) {
+        insertNumber(num);
+        std::cout << "Inserted: " << num << ", Current Median: " << getMedian() << std::endl;
+    }
+}
+
+
 int main() {
     testIntHeap();
     std::cout << std::endl;
@@ -90,6 +169,17 @@ int main() {
     std::cout << std::endl;
 
     testPersonHeap();
+    std::cout << std::endl;
+
+
+    priorityQueueExample();
+    std::cout << std::endl;
+
+    heapSortExample();
+    std::cout << std::endl;
+
+    medianMaintenanceExample();
+
 
     return 0;
 }

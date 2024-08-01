@@ -34,6 +34,7 @@ namespace STRUCTS {
 
         void append(const T& value) { insertAtEnd(value); }
         void insert(int position, const T& value) { insertAtPosition(position, value); }
+        void remove(int position) { deleteFromPosition(position); }
 
         void deleteFromBeginning(); // O(1)
         void deleteFromEnd(); // O(1) with tail pointer
